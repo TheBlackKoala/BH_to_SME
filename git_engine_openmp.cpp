@@ -568,14 +568,14 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << "}" << "\n";
     }
   }
-  //Personal end
+  //fpga end
 
 void EngineOpenMP::writeKernel(const LoopB &kernel,
                                const jitk::SymbolTable &symbols,
                                const std::vector<bh_base *> &kernel_temps,
                                uint64_t codegen_hash,
                                std::stringstream &ss) {
-  //Personal implementation
+  //fpga implementation
   cout << kernel << "\n";
   //cout << "\n";
   stringstream sme;
@@ -587,7 +587,7 @@ void EngineOpenMP::writeKernel(const LoopB &kernel,
   smeFile << sme.str();
   smeFile.close();
   //To see the command list
-  //Personal end
+  //fpga end
     assert(kernel.rank == -1);
 
     // Write the need includes
