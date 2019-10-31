@@ -27,10 +27,17 @@ def writeStart(f):
     f.write("using SME;\n\n")
     f.write("namespace " + projectname + "\n{\n")
 
+def endMainFile(f):
+    f.write("\t\tpublic static void Main(string[] args)\n\t\t{\n\n\t\t\tusing(var sim = new Simulation())\n\t\t\t{\n\n\t\t\t\tsetup();\n\n\t\t\t\t// Use fluent syntax to configure the simulator.\n\t\t\t\t// The order does not matter, but `Run()` must be\n\t\t\t\t// the last method called.\n\n\t\t\t\t// The top-level input and outputs are exposed\n\t\t\t\t// for interfacing with other VHDL code or board pins\n\n\t\t\t\tsim\n\t\t\t\t\t.AddTopLevelOutputs()\n\t\t\t\t\t.AddTopLevelInputs()\n\t\t\t\t\t.BuildCSVFile()\n\t\t\t\t\t.BuildVHDL()\n\t\t\t\t\t.Run();\n\n\t\t\t\t// After `Run()` has been invoked the folder\n\t\t\t\t// `output/vhdl` contains a Makefile that can\n\t\t\t\t// be used for testing the generated design\n\t\t\t}\n\t\t}\n\t}\n}\n")
+
 def parse(inp):
     index = 0
     line = inp.readline()
     output = False
+    insts = 0
+    ins = list()
+    outs = list()
+    ends = list()
     writeStart(outps[index])
     while(line != ''):
         if(index==0):
@@ -55,17 +62,21 @@ def parse(inp):
                 continue
             else:
                 if "proc" in line:
+                    insts += 1
                     line = line.split("proc")[1].split("()")[0]
                     outps[index].write("\t[ClockedProcess]\n")
                     outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
                     outps[index].write("\t{\n")
                 elif line.startswith("\tbus"):
+                    bus = line.split("bus ")[1].split(" {")[0]
                     if(output):
                         outps[index].write("\t\t[OutputBus]\n")
                         output= False
+                        outs.append(bus)
+                        ins.append(list())
                     else:
                         outps[index].write("\t\t[InputBus]\n")
-                    bus = line.split("bus ")[1].split(" {")[0]
+                        ins[len(ins)-1].append(bus)
                     outps[index].write("\t\tpublic tdata " + bus + ";\n\n")
                 elif line == "\t//Output\n":
                     output=True
@@ -77,10 +88,23 @@ def parse(inp):
                 elif line=="}\n":
                     outps[index].write("\t}\n\n")
         else:
-            pass
+            if line.startswith("network"):
+                outps[index].write("\tclass MainClass\n")
+                outps[index].write("\t\tpublic static void setup\n")
+                inpline = line
+                while("in " in inpline):
+                    bus = inpline.split("in ")[1].split(": tdata",1)[0]
+                    outps[index].write("\t\t\t//Connect to simulation input for " + bus + " - create it as a channel\n")
+                    inpline = inpline.split("in ")[1].split(": tdata",1)[1]
+                outline = line
+                while("out " in outline):
+                    bus = inpline.split("out ")[1].split(": tdata",1)[0]
+                    ends.append(bus)
+                    outline = outline.split("out ")[1].split(": tdata",1)[1]
+                    
 
         line = inp.readline()
-    outps[index].write("}\n")
+    endMainFile(outps[index])
 
 
 parse(inp)
