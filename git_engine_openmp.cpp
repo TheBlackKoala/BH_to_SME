@@ -425,6 +425,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       string ch = (*chans)[i];
       //Do not put in duplicate
       if(std::find(chan.begin(), chan.end(), ch) == chan.end()) {
+        if(i==offset)
+          ss<< "\t//Output\n";
         chan.push_back(ch);
         ss << "\tbus " <<  ch << " {" << "\n";
         ss << "\t\tval: vdata";
