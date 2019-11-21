@@ -28,6 +28,7 @@ def writeStart(f):
     f.write("namespace " + projectname + "\n{\n")
 
 def endMainFile(f):
+    f.write("\t\t}\n\n")
     f.write("\t\tpublic static void Main(string[] args)\n\t\t{\n\n\t\t\tusing(var sim = new Simulation())\n\t\t\t{\n\n\t\t\t\tsetup();\n\n\t\t\t\t// Use fluent syntax to configure the simulator.\n\t\t\t\t// The order does not matter, but `Run()` must be\n\t\t\t\t// the last method called.\n\n\t\t\t\t// The top-level input and outputs are exposed\n\t\t\t\t// for interfacing with other VHDL code or board pins\n\n\t\t\t\tsim\n\t\t\t\t\t.AddTopLevelOutputs()\n\t\t\t\t\t.AddTopLevelInputs()\n\t\t\t\t\t.BuildCSVFile()\n\t\t\t\t\t.BuildVHDL()\n\t\t\t\t\t.Run();\n\n\t\t\t\t// After `Run()` has been invoked the folder\n\t\t\t\t// `output/vhdl` contains a Makefile that can\n\t\t\t\t// be used for testing the generated design\n\t\t\t}\n\t\t}\n\t}\n}\n")
 
 def parse(inp):
@@ -37,7 +38,7 @@ def parse(inp):
     insts = 0
     ins = list()
     outs = list()
-    ends = list()
+    ends = [list(),list()]
     writeStart(outps[index])
     while(line != ''):
         if(index==0):
@@ -48,7 +49,7 @@ def parse(inp):
                 continue
             else:
                 if"tdata" in line:
-                    outps[index].write("\t[InitializedBus]\n")
+                    outps[index].write("\t[ClockedBus, InitializedBus]\n")
                     outps[index].write("\tpublic interface tdata : IBus\n")
                     outps[index].write("\t{\n")
                     outps[index].write("\t\t[InitialValue(0)]\n")
@@ -90,20 +91,42 @@ def parse(inp):
         else:
             if line.startswith("network"):
                 outps[index].write("\tclass MainClass\n")
-                outps[index].write("\t\tpublic static void setup\n")
+                outps[index].write("\t{\n")
+                outps[index].write("\t\tpublic static void setup(){\n")
                 inpline = line
                 while("in " in inpline):
                     bus = inpline.split("in ")[1].split(": tdata",1)[0]
-                    outps[index].write("\t\t\t//Connect to simulation input for " + bus + " - create it as a channel\n")
+                    ends[0].append(bus)
                     inpline = inpline.split("in ")[1].split(": tdata",1)[1]
+
                 outline = line
                 while("out " in outline):
                     bus = inpline.split("out ")[1].split(": tdata",1)[0]
-                    ends.append(bus)
+                    ends[1].append(bus)
                     outline = outline.split("out ")[1].split(": tdata",1)[1]
-                    
+                for i in range(len(outs)):
+                    if(outs[i] in ends[1]):
+                        outps[index].write("\t\t\t//Connect inst"  +  str(outs.index(bus)) + "." +bus + " to simulation output for " + bus +" - do not create a channel\n")
+                    outps[index].write("\t\t\tvar inst" + str(i) + " = new instr" + str(i) + "();\n")
+                    outps[index].write("\t\t\tvar " + outs[i] + " = Scope.CreateBus<tdata>();\n")
+                    outps[index].write("\t\t\tinst" + str(i) + "." + outs[i] + " = " + outs[i] + ";\n")
+                for i in range(len(ins)):
+                    for c in ins[i]:
+                        if (c in ends[0]):
+                            outps[index].write("\t\t\t//Connect inst" + str(i) +  "." + c + " to simulation input for " + c + " - create it as a channel\n")
+                        if(c in outs):
+                            outps[index].write("\t\t\tinst" + str(i) + "." + c + " = " + c + ";\n")
+
 
         line = inp.readline()
+    sim = ""
+    for c in ends[0]:
+        sim = " " + c + ","
+    outps[index].write("\t\t\tSimulation.Current.AddTopLevelInputs(" + sim[:-1] + " );\n")
+    sim = ""
+    for c in ends[1]:
+        sim = " " + c + ","
+    outps[index].write("\t\t\tSimulation.Current.AddTopLevelOutputs(" + sim[:-1] + " );\n")
     endMainFile(outps[index])
 
 

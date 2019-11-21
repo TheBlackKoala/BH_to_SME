@@ -2,7 +2,7 @@ using SME;
 
 namespace BohSME
 {
-	[InitializedBus]
+	[ClockedBus, InitializedBus]
 	public interface tdata : IBus
 	{
 		[InitialValue(0)]

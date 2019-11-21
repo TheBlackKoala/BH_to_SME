@@ -1,0 +1,11 @@
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.csprojAssemblyReference.cache
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.csproj.CoreCompileInputs.cache
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.AssemblyInfoInputs.cache
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.AssemblyInfo.cs
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/bin/Debug/netcoreapp2.0/BohSME.deps.json
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/bin/Debug/netcoreapp2.0/BohSME.runtimeconfig.json
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/bin/Debug/netcoreapp2.0/BohSME.runtimeconfig.dev.json
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/bin/Debug/netcoreapp2.0/BohSME.dll
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/bin/Debug/netcoreapp2.0/BohSME.pdb
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.dll
+/home/tor/Desktop/UNI/Speciale/Code/BohSME/obj/Debug/netcoreapp2.0/BohSME.pdb
