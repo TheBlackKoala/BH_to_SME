@@ -32,4 +32,22 @@ namespace BohSME
 		}
 	}
 
+	[ClockedProcess]
+	public class  instr2 : SimpleProcess
+	{
+		[OutputBus]
+		public tdata a3;
+
+		[InputBus]
+		public tdata a0;
+
+		[InputBus]
+		public tdata a2;
+
+		protected override void OnTick()
+		{
+			a3.val = a0.val + a2.val;
+		}
+	}
+
 }

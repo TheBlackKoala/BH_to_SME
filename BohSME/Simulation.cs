@@ -44,13 +44,14 @@ namespace BohSME
     public class  Printer : SimulationProcess
     {
         [InputBus]
-        public tdata a2;
+        public tdata a3;
 
         public override async Task Run()
         {
             for(int i =0; i<15; i++){
                 await ClockAsync();
-                int a = a2.val;
+                int a = a3.val;
+                Console.WriteLine(a);
             }
         }
     }

@@ -30,6 +30,7 @@ architecture TestBench of BohSME_tb is
   signal tdata_1_val : T_SYSTEM_INT32;
   signal tdata_0_val : T_SYSTEM_INT32;
   signal tdata_2_val : T_SYSTEM_INT32;
+  signal tdata_3_val : T_SYSTEM_INT32;
 
 begin
 
@@ -39,6 +40,7 @@ begin
     tdata_1_val => tdata_1_val,
     tdata_0_val => tdata_0_val,
     tdata_2_val => tdata_2_val,
+    tdata_3_val => tdata_3_val,
 
     ENB => ENABLE,
     RST => RESET,
@@ -85,13 +87,16 @@ begin
 
         fieldno := 0;
         read_csv_field(L, tmp);
-        assert are_strings_equal(tmp, "tdata#0.val") report "Field #" & integer'image(fieldno) & " is not correctly named: " & truncate(tmp) & ", expected tdata#0.val" severity Failure;
-        fieldno := fieldno + 1;
-        read_csv_field(L, tmp);
         assert are_strings_equal(tmp, "tdata#1.val") report "Field #" & integer'image(fieldno) & " is not correctly named: " & truncate(tmp) & ", expected tdata#1.val" severity Failure;
         fieldno := fieldno + 1;
         read_csv_field(L, tmp);
+        assert are_strings_equal(tmp, "tdata#0.val") report "Field #" & integer'image(fieldno) & " is not correctly named: " & truncate(tmp) & ", expected tdata#0.val" severity Failure;
+        fieldno := fieldno + 1;
+        read_csv_field(L, tmp);
         assert are_strings_equal(tmp, "tdata#2.val") report "Field #" & integer'image(fieldno) & " is not correctly named: " & truncate(tmp) & ", expected tdata#2.val" severity Failure;
+        fieldno := fieldno + 1;
+        read_csv_field(L, tmp);
+        assert are_strings_equal(tmp, "tdata#3.val") report "Field #" & integer'image(fieldno) & " is not correctly named: " & truncate(tmp) & ", expected tdata#3.val" severity Failure;
         fieldno := fieldno + 1;
 
         RESET <= '1';
@@ -100,7 +105,6 @@ begin
         RESET <= '0';
         ENABLE <= '1';
 
-        READLINE(F, L);
         -- Read a line each clock
         while not ENDFILE(F) loop
             READLINE(F, L);
@@ -108,6 +112,20 @@ begin
             fieldno := 0;
             newfailures := 0;
 
+            -- Write all driver signals out on the clock edge,
+            -- except on the first round, where we make sure the reset
+            -- values are propagated _before_ the initial clock edge
+            if not first_round then
+                wait until rising_edge(CLOCK);
+            end if;
+
+            read_csv_field(L, tmp);
+            if are_strings_equal(tmp, "U") then
+                tdata_1_val <= (others => 'U');
+            else
+                tdata_1_val <= signed(to_std_logic_vector(truncate(tmp)));
+            end if;
+            fieldno := fieldno + 1;
 
             if first_round then
                 wait until rising_edge(CLOCK);
@@ -129,18 +147,18 @@ begin
 
 	        read_csv_field(L, tmp);
 	        if not are_strings_equal(tmp, "U") then
-            	if not are_strings_equal(str(tdata_1_val), tmp) then
+            	if not are_strings_equal(str(tdata_2_val), tmp) then
                     newfailures := newfailures + 1;
-                    report "Value for tdata_1_val in cycle " & integer'image(clockcycle) & " was: " & str(tdata_1_val) & " but should have been: " & truncate(tmp) severity Error;
+                    report "Value for tdata_2_val in cycle " & integer'image(clockcycle) & " was: " & str(tdata_2_val) & " but should have been: " & truncate(tmp) severity Error;
                 end if;
             end if;
             fieldno := fieldno + 1;
 
 	        read_csv_field(L, tmp);
 	        if not are_strings_equal(tmp, "U") then
-            	if not are_strings_equal(str(tdata_2_val), tmp) then
+            	if not are_strings_equal(str(tdata_3_val), tmp) then
                     newfailures := newfailures + 1;
-                    report "Value for tdata_2_val in cycle " & integer'image(clockcycle) & " was: " & str(tdata_2_val) & " but should have been: " & truncate(tmp) severity Error;
+                    report "Value for tdata_3_val in cycle " & integer'image(clockcycle) & " was: " & str(tdata_3_val) & " but should have been: " & truncate(tmp) severity Error;
                 end if;
             end if;
             fieldno := fieldno + 1;

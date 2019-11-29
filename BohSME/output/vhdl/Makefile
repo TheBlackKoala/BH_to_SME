@@ -34,6 +34,8 @@ $(WORKDIR)/instr0.o: instr0.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohS
 	ghdl -a --std=$(STD) --ieee=$(IEEE) --workdir=$(WORKDIR) instr0.vhdl
 $(WORKDIR)/instr1.o: instr1.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)
 	ghdl -a --std=$(STD) --ieee=$(IEEE) --workdir=$(WORKDIR) instr1.vhdl
+$(WORKDIR)/instr2.o: instr2.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)
+	ghdl -a --std=$(STD) --ieee=$(IEEE) --workdir=$(WORKDIR) instr2.vhdl
 $(WORKDIR)/Creater.o: Creater.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)
 	ghdl -a --std=$(STD) --ieee=$(IEEE) --workdir=$(WORKDIR) Creater.vhdl
 $(WORKDIR)/csv_util.o: csv_util.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)
@@ -41,7 +43,7 @@ $(WORKDIR)/csv_util.o: csv_util.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_
 
 
 
-$(WORKDIR)/BohSME.o: BohSME.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)/instr0.o $(WORKDIR)/instr1.o $(WORKDIR)/Creater.o $(WORKDIR)/csv_util.o 
+$(WORKDIR)/BohSME.o: BohSME.vhdl $(WORKDIR)/system_types.o $(WORKDIR)/Types_BohSME.o $(WORKDIR)/instr0.o $(WORKDIR)/instr1.o $(WORKDIR)/instr2.o $(WORKDIR)/Creater.o $(WORKDIR)/csv_util.o 
 
 	ghdl -a --std=$(STD) --ieee=$(IEEE) --workdir=$(WORKDIR) BohSME.vhdl
 

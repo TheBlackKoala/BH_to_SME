@@ -17,13 +17,16 @@ entity BohSME is
 
 
     -- Top-level bus tdata signals
-    tdata_2_val: out T_SYSTEM_INT32;
+    tdata_1_val: in T_SYSTEM_INT32;
+
+    -- Top-level bus tdata signals
+    tdata_3_val: out T_SYSTEM_INT32;
 
 
-    -- Interconnection bus tdata signals
-    tdata_1_val: inout T_SYSTEM_INT32;
     -- Interconnection bus tdata signals
     tdata_0_val: inout T_SYSTEM_INT32;
+    -- Interconnection bus tdata signals
+    tdata_2_val: inout T_SYSTEM_INT32;
 
     -- User defined signals here
     -- #### USER-DATA-ENTITYSIGNALS-START
@@ -54,6 +57,8 @@ architecture RTL of BohSME is
     signal FIN_instr0 : std_logic;
 
     signal FIN_instr1 : std_logic;
+
+    signal FIN_instr2 : std_logic;
 
     signal FIN_Creater : std_logic;
 
@@ -104,6 +109,30 @@ begin
     );
 
 
+    -- Entity  instr2 signals
+    instr2: entity work.instr2
+    port map (
+        -- Input bus tdata
+        a0_val => tdata_0_val,
+
+
+        -- Input bus tdata
+        a2_val => tdata_2_val,
+
+
+        -- Output bus tdata
+        a3_val => tdata_3_val,
+
+
+
+        CLK => CLK,
+        RDY => RDY,
+        FIN => FIN_instr2,
+        ENB => ENB,
+        RST => RST
+    );
+
+
     -- Entity  Creater signals
     Creater: entity work.Creater
     generic map(
@@ -131,10 +160,11 @@ begin
     process(
       FIN_instr0, 
       FIN_instr1, 
+      FIN_instr2, 
       FIN_Creater
     )
     begin
-      if FIN_instr0 = FIN_instr1 AND FIN_instr0 = FIN_Creater then
+      if FIN_instr0 = FIN_instr1 AND FIN_instr0 = FIN_instr2 AND FIN_instr0 = FIN_Creater then
         FIN <= FIN_instr0;
       end if;
     end process;

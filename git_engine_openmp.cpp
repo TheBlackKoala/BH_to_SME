@@ -368,22 +368,17 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         }
       }
     }
-    for(map<string, string>::const_iterator it = chanSub->begin();
-        it != chanSub->end(); it++)
-      {
-        cout << "chanSub: " << it->first << " " << it->second << " " << "\n";
-      }
-    cout << "final name: " << name << "\n";
     out << name;
   }
 
-  string smeGetName(const bh_instruction &instr,
-                    const Scope &scope,
-                    const bh_view &view,
-                    vector<string> *chans,
-                    map<string, string> *chanSub,
-                    int *c){
+  pair<string,bool> smeGetName(const bh_instruction &instr,
+                               const Scope &scope,
+                               const bh_view &view,
+                               vector<string> *chans,
+                               map<string, string> *chanSub,
+                               int *c){
     stringstream ss;
+    bool isChan = false;
     if (view.isConstant()) {
       instr.constant.pprint(ss, false);
     }
@@ -391,31 +386,73 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       getNameSub(scope,view,ss,chanSub);
       chans->push_back(ss.str());
       (*c)++;
-      ss << ".val";
+      isChan = true;
     }
-    return ss.str();
+    return pair<string,bool>(ss.str(),isChan);
+  }
+
+  //Sets the level of all channels in the process and returns the level of the process
+  int findLevel(vector<pair<string,bool>> ops, map<string, int> *chanLevel, vector<string> *opsWithLevel){
+    int size = ops.size();
+    int level = 0;
+    //Find the highest level of the input buses
+    for(int i=1; i<size; i++){
+      if(ops[i].second){
+        string name = ops[i].first;
+        //If the channel has no level it is from memory - ergo 0
+        if(chanLevel->find(name)==chanLevel->end())
+          chanLevel->insert(pair<string,int>(name,0));
+        else
+          level = max(level,(*chanLevel)[name]);
+      }
+    }
+    //Add the output bus at the level over the highest input
+    chanLevel->insert(pair<string,int>(ops[0].first,level+1));
+    //We now have the highest input level that is required - all inputs must be on this level and the output on the level above - the process level
+    stringstream ss;
+    for(int i = 0; i<size; i++){
+      auto op = ops[i];
+      ss << op.first;
+      if(op.second){
+        if(i==0){
+          ss << "l" << level+1 << ".val";
+        }
+        else{
+          ss << "l" << level << ".val";
+        }
+      }
+      opsWithLevel->push_back(ss.str());
+      ss.str(string());
+    }
+
+    //The level of the process is the level of the output = highest level of input plus 1
+    return level+1;
   }
 
   //Functions to reduce the size of blockWriter
-  void instrWriter(const bh_instruction &instr,
-                   const SymbolTable &symbols,
-                   Scope *parent_scope,
-                   vector<string> *chans,
-                   vector<int> *chanDist,
-                   stringstream &ss,
-                   int i,
-                   map<string, string> *chanSub
-                   ){
+  int instrWriter(const bh_instruction &instr,
+                  const SymbolTable &symbols,
+                  Scope *parent_scope,
+                  vector<string> *chans,
+                  vector<int> *chanDist,
+                  stringstream &ss,
+                  int i,
+                  map<string, string> *chanSub,
+                  map<string, int> *chanLevel
+                  ){
     //Setting the process up in sme
     ss << "proc instr" << i << "()" << "\n";
     jitk::Scope scope(symbols,parent_scope);
-    //Vector containing operands (arrays and constants)
-    vector<string> ops;
+    //Vector containing operands (arrays and constants) along with whether they are a channel or not. True means channel
+    vector<pair<string,bool>> ops;
+    //Vector containing the channel-names including level
+    vector<string> opsWithLevel;
     //Counting number of channels in the process
     int c = 0;
     for (uint i=0; i<instr.operand.size(); i++){
       ops.push_back(smeGetName(instr, scope, instr.operand[i],chans,chanSub,&c));
     }
+    int level = findLevel(ops,chanLevel,&opsWithLevel);
     chanDist->push_back(c);
     //Set the channels up in each process
     uint offset = chans->size() - c;
@@ -438,8 +475,9 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     }
     //The process body
     ss << "{" << "\n\t";
-    write_operation(instr, ops, ss, false);
+    write_operation(instr, opsWithLevel, ss, false);
     ss << "}" << "\n" << "\n";
+    return level;
   }
 
   void writeNetworkStart(vector<string> news, vector<string> frees, vector<string> chans, stringstream &ss){
@@ -448,6 +486,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //Outside channels - currently memory
     vector<string> ins = news;
     //Write input channels
+    //Any channel not in news and not already added will be written as input
     for (string c : chans){
       if( std::find(ins.begin(), ins.end(), c) == ins.end()){
         ss << "in " << c << ": tdata, ";
@@ -455,15 +494,38 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       }
     }
     //Write output channels
+    //Take all channels from news that are not freed and write them out
     for (string c : news){
       if( std::find(frees.begin(), frees.end(), c) == frees.end()){
         ss << "out " << c << ": tdata, ";
       }
     }
+    //Fix the end of the function by removing the last two character (", ") and instead putting in "){".
     ss.seekp(-2,ss.cur);
     ss << "){" << "\n";
   }
 
+  //Write all repeaters for a channel. Start at the level after it is created (memory processes are 0 so start at 1 and end at the highest level of any process
+  void writeRepeaters(int start, int end, stringstream &ss, string chanName){
+    for(int i =start+1; i<end; i++){
+      ss << "proc repeater" << chanName << "l" << i << "()" << "\n";
+      ss << "\t" << "//Output" << "\n";
+      ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
+      ss << "\t" << "bus " << chanName << "l" << i-1 << ": tdata;" << "\n";
+      ss << "{" << "\n";
+      ss << "\t" << chanName << "l" << i << ".val =" << chanName << "l" << i-1 << ".val" << "\n";
+      ss << "}" << "\n" << "\n";
+    }
+  }
+
+  //Create instances of all repeaters of a channel. Like writeRepeaters.
+  void instanceRepeaters(int start, int end, stringstream &ss, string chanName){
+    for(int i =start+1; i<end; i++){
+      ss << "\t" << "instance " << "rep" << chanName << "l" << i << " of " << "repeater" << chanName << "l" << i << "();\n";
+    }
+  }
+
+  //Write all instances of processes
   void writeInstance(uint size,stringstream &ss){
     for(uint i=0; i<size; i++){
       ss << "\t" << "instance " << i << "_inst of " << "instr" << i << "();" << "\n";
@@ -473,11 +535,12 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   void writeOutCh(vector<string> out,
                   vector<string> frees,
-                  stringstream &ss){
+                  stringstream &ss,
+                  int level){
     for(uint i = 0; i< out.size(); i++){
       string c = out[i];
       if(std::find(frees.begin(), frees.end(), c) == frees.end()){
-        ss << "\t\t" << i << "_inst." << c << ".val" << " -> ";
+        ss << "\t\t" << i << "_inst." << c << "l" << level <<".val" << " -> ";
         ss << c << ".val" << "," << "\n";
       }
     }
@@ -491,11 +554,22 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
                    const Scope *parent_scope,
                    stringstream &ss
                    ){
+    //Scope for names and such
     jitk::Scope scope(symbols,parent_scope);
+    //List of channels
     vector<string> chans;
+    //Number of channels in each process
     vector<int> chanDist;
+    //A map where each channelname is mapped to a stride
     map<string, string> chanSub;
+    //A map of channelnames and creation level
+    map<string, int> chanLevel;
+    //Number of processes/instructions
     int count = 0;
+    //The highest level for repeaters
+    int level = 0;
+
+
     for (const Block &b: kernel._block_list){
       //Make recursive function
       if(b.isInstr()){
@@ -504,12 +578,14 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           ss << "type vdata: i32;" << "\n";
           ss << "type tdata: { val: vdata; };" << "\n" << "\n";
         }
+        //Write the instruction to the stream - this is where stuff happens
         const InstrPtr &instr = b.getInstr();
-        instrWriter(*instr,symbols,&scope,&chans, &chanDist, ss, count, &chanSub);
+        int instLevel = instrWriter(*instr,symbols,&scope,&chans, &chanDist, ss, count, &chanSub,&chanLevel);
+        level = max(instLevel,level);
         count++;
       }
       else{
-        //Loop er interressant i indlæsning fra hukommelsen
+        //Loop information is for reading from memory with strides
         blockWriter(b.getLoop(),symbols, &scope, ss);
       }
     }
@@ -520,14 +596,25 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       for (auto c : kernel._news){
         news.push_back(string("a") + to_string(symbols.baseID(c)));
       }
+      //Make a list of all channels freed in the network
       vector<string> frees;
       for (auto c : kernel._frees){
         frees.push_back(string("a") + to_string(symbols.baseID(c)));
       }
+
+      //Before setting the network up we need to create all the repeater processes
+      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+        writeRepeaters(it->second, level, ss, it->first);
+      }
+
       //Set the network up
       writeNetworkStart(news, frees, chans, ss);
       //Create instances of all processes
       writeInstance(chanDist.size(),ss);
+      //Create an instance for all repeaters
+      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+        instanceRepeaters(it->second, level, ss, it->first);
+      }
 
       //Put the network together
       ss << "\t" << "connect" << "\n";
@@ -552,7 +639,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
             added.push_back(c);
             auto it = std::find(out.begin(), out.end(), c);
             if( it == out.end()) {
-              ss << "\t\t" << c << ".val" << " -> ";
+              ss << "\t\t" << c << "l" << 0 << ".val" << " -> ";
               ss << proc-1 << "_inst." << c << ".val";
               ss << "," << "\n";
             } else {
@@ -565,7 +652,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         }
       }
       //Then write the output channels
-      writeOutCh(out, frees, ss);
+      writeOutCh(out, frees, ss, level);
       //End the network definition
       ss << "}" << "\n";
     }
@@ -588,7 +675,7 @@ void EngineOpenMP::writeKernel(const LoopB &kernel,
   smeFile.open("/home/tor/Desktop/UNI/Speciale/Code/ckernel2.sme");
   smeFile << sme.str();
   smeFile.close();
-  //To see the command list
+
   //fpga end
     assert(kernel.rank == -1);
 

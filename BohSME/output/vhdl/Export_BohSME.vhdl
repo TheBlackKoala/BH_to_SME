@@ -16,7 +16,10 @@ entity BohSME_export is
   port(
 
     -- Top-level bus tdata signals
-    tdata_2_val: out STD_LOGIC_VECTOR(31 downto 0);
+    tdata_1_val: in STD_LOGIC_VECTOR(31 downto 0);
+
+    -- Top-level bus tdata signals
+    tdata_3_val: out STD_LOGIC_VECTOR(31 downto 0);
 
 
     -- User defined signals here
@@ -46,18 +49,21 @@ architecture RTL of BohSME_export is
   -- #### USER-DATA-SIGNALS-END
 
   -- Intermediate conversion signal to convert internal types to external ones
-  signal tmp_tdata_2_val : T_SYSTEM_INT32;
+  signal tmp_tdata_3_val : T_SYSTEM_INT32;
 
 begin
 
     -- Carry converted signals from entity to wrapped outputs
-  tdata_2_val <= std_logic_vector(tmp_tdata_2_val);
+  tdata_3_val <= std_logic_vector(tmp_tdata_3_val);
 
     -- Entity BohSME signals
     BohSME: entity work.BohSME
     port map (
+        -- Input bus tdata
+        tdata_1_val => signed(tdata_1_val),
+
         -- Output bus tdata
-        tdata_2_val => tmp_tdata_2_val,
+        tdata_3_val => tmp_tdata_3_val,
 
         ENB => ENB,
         RST => RST,
