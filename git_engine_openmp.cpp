@@ -438,7 +438,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
                   stringstream &ss,
                   int i,
                   map<string, string> *chanSub,
-                  map<string, int> *chanLevel
+                  map<string, int> *chanLevel,
+                  vector<int> *procLevel
                   ){
     //Setting the process up in sme
     ss << "proc instr" << i << "()" << "\n";
@@ -453,6 +454,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ops.push_back(smeGetName(instr, scope, instr.operand[i],chans,chanSub,&c));
     }
     int level = findLevel(ops,chanLevel,&opsWithLevel);
+    procLevel->push_back(level);
     chanDist->push_back(c);
     //Set the channels up in each process
     uint offset = chans->size() - c;
@@ -462,15 +464,22 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       string ch = (*chans)[i];
       //Do not put in duplicate
       if(std::find(chan.begin(), chan.end(), ch) == chan.end()) {
-        if(i==offset)
+        if(i==offset){
           ss<< "\t//Output\n";
-        chan.push_back(ch);
-        ss << "\tbus " <<  ch << " {" << "\n";
-        ss << "\t\tval: vdata";
-        if(i==offset)
+          chan.push_back(ch);
+          ss << "\tbus " <<  ch << "l" << level << " {" << "\n";
+          ss << "\t\tval: vdata";
           ss << " = 0";
-        ss << ";" << "\n";
-        ss << "\t};" << "\n"  << "\n";
+          ss << ";" << "\n";
+          ss << "\t};" << "\n"  << "\n";
+        }
+        else {
+          chan.push_back(ch);
+          ss << "\tbus " <<  ch << "l" << level-1 << " {" << "\n";
+          ss << "\t\tval: vdata";
+          ss << ";" << "\n";
+          ss << "\t};" << "\n"  << "\n";
+        }
       }
     }
     //The process body
@@ -513,7 +522,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
       ss << "\t" << "bus " << chanName << "l" << i-1 << ": tdata;" << "\n";
       ss << "{" << "\n";
-      ss << "\t" << chanName << "l" << i << ".val =" << chanName << "l" << i-1 << ".val" << "\n";
+      ss << "\t" << chanName << "l" << i << ".val =" << chanName << "l" << i-1 << ".val;" << "\n";
       ss << "}" << "\n" << "\n";
     }
   }
@@ -533,15 +542,34 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     ss << "\n";
   }
 
+  void connectRepeaters(int start, int end, stringstream &ss, string chanName){
+    if(start==0){
+      ss << "\t\t" << chanName << ".val" << " -> " << "rep" << chanName << "l1." << chanName << "l0" << ".val," << "\n";
+    }
+    for(int i =start+2; i<end; i++){
+      ss << "\t\t" << "rep" << chanName << "l" << i-1 << ".";
+      ss << chanName << "l" << i-1 << ".val" << " -> ";
+      ss << "rep" << chanName << "l" << i << ".";
+      ss << chanName << "l" << i-1 << ".val," << "\n";
+    }
+  }
+
   void writeOutCh(vector<string> out,
                   vector<string> frees,
                   stringstream &ss,
-                  int level){
+                  int level,
+                  vector<int> procLevel){
     for(uint i = 0; i< out.size(); i++){
       string c = out[i];
       if(std::find(frees.begin(), frees.end(), c) == frees.end()){
-        ss << "\t\t" << i << "_inst." << c << "l" << level <<".val" << " -> ";
-        ss << c << ".val" << "," << "\n";
+        if(procLevel[i]==level){
+          ss << "\t\t" << i << "_inst." << c << "l" << level <<".val" << " -> ";
+          ss << c << ".val" << "," << "\n";
+        }
+        else{
+          ss << "\t\t" << "rep" << c << "l" << level <<".val" << " -> ";
+          ss << c << ".val" << "," << "\n";
+        }
       }
     }
     //Remove the last , and put in a ;
@@ -560,6 +588,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     vector<string> chans;
     //Number of channels in each process
     vector<int> chanDist;
+    //Level of each process
+    vector<int> procLevel;
     //A map where each channelname is mapped to a stride
     map<string, string> chanSub;
     //A map of channelnames and creation level
@@ -580,7 +610,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         }
         //Write the instruction to the stream - this is where stuff happens
         const InstrPtr &instr = b.getInstr();
-        int instLevel = instrWriter(*instr,symbols,&scope,&chans, &chanDist, ss, count, &chanSub,&chanLevel);
+        int instLevel = instrWriter(*instr,symbols,&scope,&chans, &chanDist, ss, count, &chanSub,&chanLevel,&procLevel);
         level = max(instLevel,level);
         count++;
       }
@@ -618,6 +648,11 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
       //Put the network together
       ss << "\t" << "connect" << "\n";
+      //Connect all the repeaters and the base inputs
+      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+        connectRepeaters(it->second, level, ss, it->first);
+      }
+      ss << "\n";
       //Use exclusive scan plus on chandist
       vector<int> scanDist = {0};
       for(uint i =0; i<chanDist.size(); i++){
@@ -633,26 +668,50 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           proc++;
           out.push_back(c);
           vector<string> added = {};
+          //If the output channel has a repeater then connect the data to it
+          if(procLevel[proc-1]<level){
+            ss << "\t\t";
+            ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1] << ".val" << " -> ";
+            ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ".val,";
+            ss << "\n";
+          }
+
         }
         else{
           if(std::find(added.begin(), added.end(), c) == added.end()) {
             added.push_back(c);
             auto it = std::find(out.begin(), out.end(), c);
             if( it == out.end()) {
-              ss << "\t\t" << c << "l" << 0 << ".val" << " -> ";
-              ss << proc-1 << "_inst." << c << ".val";
-              ss << "," << "\n";
-            } else {
+              if(procLevel[proc-1]==1){
+                ss << "\t\t" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 <<".val";
+                ss << "," << "\n";
+              }
+              else{
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "," << "\n";
+              }
+            }
+            else {
               int index = std::distance(out.begin(), it);
-              ss << "\t\t" << index << "_inst." << c << ".val" << " -> ";
-              ss << proc-1 << "_inst." << c << ".val";
-              ss << "," << "\n";
+              cout << "proc" << procLevel[proc-1] << " index" << procLevel[index] <<"\n";
+              if(procLevel[proc-1]==procLevel[index]+1){
+                ss << "\t\t" << index << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "," << "\n";
+              }
+              else{
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "," << "\n";
+              }
             }
           }
         }
       }
       //Then write the output channels
-      writeOutCh(out, frees, ss, level);
+      writeOutCh(out, frees, ss, level, procLevel);
       //End the network definition
       ss << "}" << "\n";
     }

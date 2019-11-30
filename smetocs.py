@@ -69,7 +69,7 @@ def parse(inp):
                     outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
                     outps[index].write("\t{\n")
                 elif line.startswith("\tbus"):
-                    bus = line.split("bus ")[1].split(" {")[0]
+                    bus = line.split("bus ")[1].split(" {")[0].split(": ")[0]
                     if(output):
                         outps[index].write("\t\t[OutputBus]\n")
                         output= False
