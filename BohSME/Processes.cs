@@ -3,7 +3,7 @@ using SME;
 namespace BohSME
 {
 	[ClockedProcess]
-	public class  instr0 : SimpleProcess
+	public class instr0 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a0l1;
@@ -18,7 +18,7 @@ namespace BohSME
 	}
 
 	[ClockedProcess]
-	public class  instr1 : SimpleProcess
+	public class instr1 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a2l2;
@@ -33,7 +33,7 @@ namespace BohSME
 	}
 
 	[ClockedProcess]
-	public class  instr2 : SimpleProcess
+	public class instr2 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a3l3;
@@ -51,7 +51,7 @@ namespace BohSME
 	}
 
 	[ClockedProcess]
-	public class  repeatera0l2 : SimpleProcess
+	public class repeatera0l2 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a0l2;
@@ -66,7 +66,22 @@ namespace BohSME
 	}
 
 	[ClockedProcess]
-	public class  repeatera1l1 : SimpleProcess
+	public class repeatera0l3 : SimpleProcess
+	{
+		[OutputBus]
+		public tdata a0l3;
+
+		[InputBus]
+		public tdata a0l2;
+
+		protected override void OnTick()
+		{
+			a0l3.val =a0l2.val;
+		}
+	}
+
+	[ClockedProcess]
+	public class repeatera1l1 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a1l1;
@@ -81,7 +96,7 @@ namespace BohSME
 	}
 
 	[ClockedProcess]
-	public class  repeatera1l2 : SimpleProcess
+	public class repeatera1l2 : SimpleProcess
 	{
 		[OutputBus]
 		public tdata a1l2;
@@ -92,6 +107,36 @@ namespace BohSME
 		protected override void OnTick()
 		{
 			a1l2.val =a1l1.val;
+		}
+	}
+
+	[ClockedProcess]
+	public class repeatera1l3 : SimpleProcess
+	{
+		[OutputBus]
+		public tdata a1l3;
+
+		[InputBus]
+		public tdata a1l2;
+
+		protected override void OnTick()
+		{
+			a1l3.val =a1l2.val;
+		}
+	}
+
+	[ClockedProcess]
+	public class repeatera2l3 : SimpleProcess
+	{
+		[OutputBus]
+		public tdata a2l3;
+
+		[InputBus]
+		public tdata a2l2;
+
+		protected override void OnTick()
+		{
+			a2l3.val =a2l2.val;
 		}
 	}
 

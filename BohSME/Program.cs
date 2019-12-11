@@ -5,31 +5,58 @@ namespace BohSME
 	class MainClass
 	{
 		public static void setup(){
-			var inst0 = new instr0();
+			var instr0 = new instr0();
 			var a0l1 = Scope.CreateBus<tdata>();
-			inst0.a0l1 = a0l1;
-			var inst1 = new instr1();
+			instr0.a0l1 = a0l1;
+			var instr1 = new instr1();
 			var a2l2 = Scope.CreateBus<tdata>();
-			inst1.a2l2 = a2l2;
-			var inst2 = new instr2();
+			instr1.a2l2 = a2l2;
+			var instr2 = new instr2();
 			var a3l3 = Scope.CreateBus<tdata>();
-			inst2.a3l3 = a3l3;
-			var inst3 = new instr3();
+			instr2.a3l3 = a3l3;
+			var repeatera0l2 = new repeatera0l2();
 			var a0l2 = Scope.CreateBus<tdata>();
-			inst3.a0l2 = a0l2;
-			var inst4 = new instr4();
+			repeatera0l2.a0l2 = a0l2;
+			var repeatera0l3 = new repeatera0l3();
+			var a0l3 = Scope.CreateBus<tdata>();
+			repeatera0l3.a0l3 = a0l3;
+			var repeatera1l1 = new repeatera1l1();
 			var a1l1 = Scope.CreateBus<tdata>();
-			inst4.a1l1 = a1l1;
-			var inst5 = new instr5();
+			repeatera1l1.a1l1 = a1l1;
+			var repeatera1l2 = new repeatera1l2();
 			var a1l2 = Scope.CreateBus<tdata>();
-			inst5.a1l2 = a1l2;
-			inst1.a0l1 = a0l1;
-			inst2.a0l2 = a0l2;
-			inst2.a2l2 = a2l2;
-			inst3.a0l1 = a0l1;
-			inst5.a1l1 = a1l1;
-			Simulation.Current.AddTopLevelInputs( a1 );
-			Simulation.Current.AddTopLevelOutputs( a2 );
+			repeatera1l2.a1l2 = a1l2;
+			var repeatera1l3 = new repeatera1l3();
+			var a1l3 = Scope.CreateBus<tdata>();
+			repeatera1l3.a1l3 = a1l3;
+			var repeatera2l3 = new repeatera2l3();
+			var a2l3 = Scope.CreateBus<tdata>();
+
+                        //Simulation
+                        var creater = new Creater();
+                        var printer = new Printer();
+
+                        var a1 = Scope.CreateBus<tdata>();
+                        creater.a1=a1;
+                        var a3 = a3l3;
+                        printer.a3=a3;
+                        var a1l0= a1;
+
+			repeatera2l3.a2l3 = a2l3;
+			instr0.a1l0 = a1l0;
+			instr1.a0l1 = a0l1;
+			instr2.a0l2 = a0l2;
+			instr2.a2l2 = a2l2;
+			repeatera0l2.a0l1 = a0l1;
+			repeatera0l3.a0l2 = a0l2;
+			repeatera1l1.a1l0 = a1l0;
+			repeatera1l2.a1l1 = a1l1;
+			repeatera1l3.a1l2 = a1l2;
+			repeatera2l3.a2l2 = a2l2;
+			//Connect  a1 to all l0 channels
+			//Simulation.Current.AddTopLevelInputs( a1 );
+			//Connect  a3 to the highest level channels with the corresponding name
+			Simulation.Current.AddTopLevelOutputs( a3 );
 		}
 
 		public static void Main(string[] args)
