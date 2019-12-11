@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
                         var a1 = Scope.CreateBus<tdata>();
                         creater.a1=a1;
-                        printer.a2=a2;
-                        inst0.a1=a1;
+                        var a3 = a3l3;
+                        printer.a3=a3;
+                        var a1l0= a1;
  */
 namespace BohSME
 {
