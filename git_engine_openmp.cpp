@@ -467,18 +467,15 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         if(i==offset){
           ss<< "\t//Output\n";
           chan.push_back(ch);
-          ss << "\tbus " <<  ch << "l" << level << " {" << "\n";
-          ss << "\t\tval: vdata";
-          ss << " = 0";
-          ss << ";" << "\n";
-          ss << "\t};" << "\n"  << "\n";
+          ss << "\tbus " <<  ch << "l" << level << ": tdata;" << "\n";
         }
         else {
           chan.push_back(ch);
-          ss << "\tbus " <<  ch << "l" << level-1 << " {" << "\n";
-          ss << "\t\tval: vdata";
-          ss << ";" << "\n";
-          ss << "\t};" << "\n"  << "\n";
+          ss << "\tbus " <<  ch << "l" << level-1 << ": tdata;" << "\n";
+          // ss << "\tbus " <<  ch << "l" << level-1 << " {" << "\n";
+          // ss << "\t\tval: vdata";
+          // ss << ";" << "\n";
+          // ss << "\t};" << "\n"  << "\n";
         }
       }
     }
@@ -516,7 +513,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   //Write all repeaters for a channel. Start at the level after it is created (memory processes are 0 so start at 1 and end at the highest level of any process
   void writeRepeaters(int start, int end, stringstream &ss, string chanName){
-    for(int i =start+1; i<end; i++){
+    for(int i =start+1; i<=end; i++){
       ss << "proc repeater" << chanName << "l" << i << "()" << "\n";
       ss << "\t" << "//Output" << "\n";
       ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
@@ -529,7 +526,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   //Create instances of all repeaters of a channel. Like writeRepeaters.
   void instanceRepeaters(int start, int end, stringstream &ss, string chanName){
-    for(int i =start+1; i<end; i++){
+    for(int i =start+1; i<=end; i++){
       ss << "\t" << "instance " << "rep" << chanName << "l" << i << " of " << "repeater" << chanName << "l" << i << "();\n";
     }
   }
@@ -544,13 +541,13 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   void connectRepeaters(int start, int end, stringstream &ss, string chanName){
     if(start==0){
-      ss << "\t\t" << chanName << ".val" << " -> " << "rep" << chanName << "l1." << chanName << "l0" << ".val," << "\n";
+      ss << "\t\t" << chanName  << " -> " << "rep" << chanName << "l1." << chanName << "l0" << "," << "\n";
     }
-    for(int i =start+2; i<end; i++){
+    for(int i =start+2; i<=end; i++){
       ss << "\t\t" << "rep" << chanName << "l" << i-1 << ".";
-      ss << chanName << "l" << i-1 << ".val" << " -> ";
+      ss << chanName << "l" << i-1  << " -> ";
       ss << "rep" << chanName << "l" << i << ".";
-      ss << chanName << "l" << i-1 << ".val," << "\n";
+      ss << chanName << "l" << i-1 << "," << "\n";
     }
   }
 
@@ -563,12 +560,12 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       string c = out[i];
       if(std::find(frees.begin(), frees.end(), c) == frees.end()){
         if(procLevel[i]==level){
-          ss << "\t\t" << i << "_inst." << c << "l" << level <<".val" << " -> ";
-          ss << c << ".val" << "," << "\n";
+          ss << "\t\t" << i << "_inst." << c << "l" << level  << " -> ";
+          ss << c  << "," << "\n";
         }
         else{
-          ss << "\t\t" << "rep" << c << "l" << level <<".val" << " -> ";
-          ss << c << ".val" << "," << "\n";
+          ss << "\t\t" << "rep" << c << "l" << level  << " -> ";
+          ss << c  << "," << "\n";
         }
       }
     }
@@ -605,8 +602,10 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       if(b.isInstr()){
         if(count==0){
           //Set the start of the sme-file up.
+          //If vdata is changed so might the neutral element ne
           ss << "type vdata: i32;" << "\n";
-          ss << "type tdata: { val: vdata; };" << "\n" << "\n";
+          string ne = "0";
+          ss << "type tdata: { val: vdata = " << ne << "; };" << "\n" << "\n";
         }
         //Write the instruction to the stream - this is where stuff happens
         const InstrPtr &instr = b.getInstr();
@@ -671,8 +670,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           //If the output channel has a repeater then connect the data to it
           if(procLevel[proc-1]<level){
             ss << "\t\t";
-            ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1] << ".val" << " -> ";
-            ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ".val,";
+            ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]  << " -> ";
+            ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ",";
             ss << "\n";
           }
 
@@ -683,27 +682,26 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
             auto it = std::find(out.begin(), out.end(), c);
             if( it == out.end()) {
               if(procLevel[proc-1]==1){
-                ss << "\t\t" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 <<".val";
+                ss << "\t\t" << c << "l" << procLevel[proc-1]-1 << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
               else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
             }
             else {
               int index = std::distance(out.begin(), it);
-              cout << "proc" << procLevel[proc-1] << " index" << procLevel[index] <<"\n";
               if(procLevel[proc-1]==procLevel[index]+1){
-                ss << "\t\t" << index << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "\t\t" << index << "_inst." << c << "l" << procLevel[proc-1]-1 << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
               else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << ".val" << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1 << ".val";
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << " -> ";
+                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
             }
@@ -725,7 +723,6 @@ void EngineOpenMP::writeKernel(const LoopB &kernel,
                                std::stringstream &ss) {
   //fpga implementation
   cout << kernel << "\n";
-  //cout << "\n";
   stringstream sme;
   blockWriter(kernel, symbols, nullptr, sme);
 
