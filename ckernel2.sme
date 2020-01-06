@@ -1,12 +1,26 @@
 type vdata: i32;
-type tdata: { val: vdata = 0; };
+const len: u32 = 32;
+type adata: vdata [ len ];
+type tdata: { val:adata; valid:bool = false; len:u32;};
 
 proc instr0()
 	//Output
 	bus a0l1: tdata;
 	bus a1l0: tdata;
 {
-	a0l1.val = a1l0.val + a1l0.val;
+	if (a1l0.valid){
+		var minLen = a1l0.len;
+		a0l1.valid = true;
+		a0l1.len = minLen;
+		for i = 0 to len - 1 {
+			if (i<minLen){
+				a0l1.val[i] = a1l0.val[i] + a1l0.val[i];
+			}
+		}
+	}
+	else{
+		a0l1.valid = false;
+	}
 }
 
 proc instr1()
@@ -14,7 +28,19 @@ proc instr1()
 	bus a2l2: tdata;
 	bus a0l1: tdata;
 {
-	a2l2.val = a0l1.val + 2;
+	if (a0l1.valid){
+		var minLen = a0l1.len;
+		a2l2.valid = true;
+		a2l2.len = minLen;
+		for i = 0 to len - 1 {
+			if (i<minLen){
+				a2l2.val[i] = a0l1.val[i] + 2;
+			}
+		}
+	}
+	else{
+		a2l2.valid = false;
+	}
 }
 
 proc instr2()
@@ -23,7 +49,22 @@ proc instr2()
 	bus a0l2: tdata;
 	bus a2l2: tdata;
 {
-	a3l3.val = a0l2.val + a2l2.val;
+	if (a0l2.valid && a2l2.valid){
+		var minLen = a0l2.len;
+		if (minLen > a2l2.len){
+			minLen = a2l2.len;
+		}
+		a3l3.valid = true;
+		a3l3.len = minLen;
+		for i = 0 to len - 1 {
+			if (i<minLen){
+				a3l3.val[i] = a0l2.val[i] + a2l2.val[i];
+			}
+		}
+	}
+	else{
+		a3l3.valid = false;
+	}
 }
 
 proc repeatera0l2()
@@ -31,7 +72,18 @@ proc repeatera0l2()
 	bus a0l2: tdata;
 	bus a0l1: tdata;
 {
-	a0l2.val =a0l1.val;
+	if (a0l1.valid){
+		a0l2.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a0l1.len){
+				a0l2.val[i] = a0l1.val[i];
+			}
+		}
+		a0l2.len = a0l1.len;
+	}
+	else{
+		a0l2.valid = false;
+	}
 }
 
 proc repeatera0l3()
@@ -39,7 +91,18 @@ proc repeatera0l3()
 	bus a0l3: tdata;
 	bus a0l2: tdata;
 {
-	a0l3.val =a0l2.val;
+	if (a0l2.valid){
+		a0l3.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a0l2.len){
+				a0l3.val[i] = a0l2.val[i];
+			}
+		}
+		a0l3.len = a0l2.len;
+	}
+	else{
+		a0l3.valid = false;
+	}
 }
 
 proc repeatera1l1()
@@ -47,7 +110,18 @@ proc repeatera1l1()
 	bus a1l1: tdata;
 	bus a1l0: tdata;
 {
-	a1l1.val =a1l0.val;
+	if (a1l0.valid){
+		a1l1.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a1l0.len){
+				a1l1.val[i] = a1l0.val[i];
+			}
+		}
+		a1l1.len = a1l0.len;
+	}
+	else{
+		a1l1.valid = false;
+	}
 }
 
 proc repeatera1l2()
@@ -55,7 +129,18 @@ proc repeatera1l2()
 	bus a1l2: tdata;
 	bus a1l1: tdata;
 {
-	a1l2.val =a1l1.val;
+	if (a1l1.valid){
+		a1l2.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a1l1.len){
+				a1l2.val[i] = a1l1.val[i];
+			}
+		}
+		a1l2.len = a1l1.len;
+	}
+	else{
+		a1l2.valid = false;
+	}
 }
 
 proc repeatera1l3()
@@ -63,7 +148,18 @@ proc repeatera1l3()
 	bus a1l3: tdata;
 	bus a1l2: tdata;
 {
-	a1l3.val =a1l2.val;
+	if (a1l2.valid){
+		a1l3.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a1l2.len){
+				a1l3.val[i] = a1l2.val[i];
+			}
+		}
+		a1l3.len = a1l2.len;
+	}
+	else{
+		a1l3.valid = false;
+	}
 }
 
 proc repeatera2l3()
@@ -71,7 +167,18 @@ proc repeatera2l3()
 	bus a2l3: tdata;
 	bus a2l2: tdata;
 {
-	a2l3.val =a2l2.val;
+	if (a2l2.valid){
+		a2l3.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a2l2.len){
+				a2l3.val[i] = a2l2.val[i];
+			}
+		}
+		a2l3.len = a2l2.len;
+	}
+	else{
+		a2l3.valid = false;
+	}
 }
 
 network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){

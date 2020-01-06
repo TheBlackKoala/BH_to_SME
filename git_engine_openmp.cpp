@@ -415,10 +415,10 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << op.first;
       if(op.second){
         if(i==0){
-          ss << "l" << level+1 << ".val";
+          ss << "l" << level+1 << ".val" << "[i]";
         }
         else{
-          ss << "l" << level << ".val";
+          ss << "l" << level << ".val" << "[i]";
         }
       }
       opsWithLevel->push_back(ss.str());
@@ -472,16 +472,45 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         else {
           chan.push_back(ch);
           ss << "\tbus " <<  ch << "l" << level-1 << ": tdata;" << "\n";
-          // ss << "\tbus " <<  ch << "l" << level-1 << " {" << "\n";
-          // ss << "\t\tval: vdata";
-          // ss << ";" << "\n";
-          // ss << "\t};" << "\n"  << "\n";
         }
       }
     }
     //The process body
-    ss << "{" << "\n\t";
+    ss << "{" << "\n";
+    //Valid guard
+    ss << "\t" << "if (";
+    for (uint i=1; i<chan.size(); i++){
+      ss << chan[i] << "l" << level-1 << ".valid && ";
+    }
+    ss.seekp(-4,ss.cur);
+    ss << "){" << "\n";
+    //Find the minimal length of arrays
+    ss << "\t" << "\t" << "var minLen = " << chan[1] << "l" << level-1 << ".len;" << "\n";
+    for (uint i=2; i<chan.size(); i++){
+      ss << "\t" << "\t" << "if (minLen > " << chan[i] << "l" << level-1 << ".len){" << "\n";
+      ss <<"\t" << "\t" << "\t" << "minLen = " << chan[i] << "l" << level-1 << ".len;"<< "\n";
+      ss << "\t" << "\t" << "}" << "\n";
+    }
+    //The output will then be valid
+    ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = true;" << "\n";
+    ss << "\t" << "\t" << chan[0] << "l" << level << ".len = minLen;" << "\n";
+    //Set the for-loop
+    ss << "\t" << "\t" << "for i = 0 to len - 1 {" << "\n";
+    //Length guard
+    ss << "\t" << "\t" << "\t" << "if (i<minLen";
+    ss << "){" << "\n";
+    //Correct indentation
+    ss << "\t" << "\t" << "\t" << "\t";
     write_operation(instr, opsWithLevel, ss, false);
+    //End for-loop and process
+    ss << "\t" << "\t" << "\t" << "}" << "\n";
+    ss << "\t" << "\t" << "}" << "\n";
+    ss << "\t" << "}" << "\n";
+    //If the inputs are not valid then the output is not valid
+    ss << "\t" << "else{" << "\n";
+    ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = false;" << "\n";
+    ss << "\t" << "}" << "\n";
+    //Close the process
     ss << "}" << "\n" << "\n";
     return level;
   }
@@ -519,7 +548,21 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
       ss << "\t" << "bus " << chanName << "l" << i-1 << ": tdata;" << "\n";
       ss << "{" << "\n";
-      ss << "\t" << chanName << "l" << i << ".val =" << chanName << "l" << i-1 << ".val;" << "\n";
+      ss << "\t" << "if (" << chanName << "l" << i-1 << ".valid" << "){" << "\n";
+      ss << "\t" << "\t" << chanName << "l" << i << ".valid=true;" << "\n";
+      ss << "\t" << "\t" << "for i = 0 to len -1 {" << "\n";
+      ss << "\t" << "\t" << "\t" << "if ( i < " << chanName << "l" << i-1 << ".len" << "){" << "\n";
+      ss << "\t" << "\t" << "\t" << "\t" << chanName << "l" << i << ".val[i] = " << chanName << "l" << i-1 << ".val[i];" << "\n";
+      //End for-loop and process
+      ss << "\t" << "\t" << "\t" << "}" << "\n";
+      ss << "\t" << "\t" << "}" << "\n";
+      ss << "\t" << "\t" << chanName << "l" << i << ".len = " << chanName << "l" << i-1<< ".len;" << "\n";
+      ss << "\t" << "}" << "\n";
+      //If the input is not valid then the output is not valid
+      ss << "\t" << "else{" << "\n";
+      ss << "\t" << "\t" << chanName << "l" << i << ".valid = false;" << "\n";
+      ss << "\t" << "}" << "\n";
+      //Close the process
       ss << "}" << "\n" << "\n";
     }
   }
@@ -604,8 +647,9 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           //Set the start of the sme-file up.
           //If vdata is changed so might the neutral element ne
           ss << "type vdata: i32;" << "\n";
-          string ne = "0";
-          ss << "type tdata: { val: vdata = " << ne << "; };" << "\n" << "\n";
+          ss << "const len: u32 = 32;" << "\n";
+          ss << "type adata: vdata [ len ];" << "\n";
+          ss << "type tdata: { val:adata; valid:bool = false; len:u32;};" << "\n" << "\n";
         }
         //Write the instruction to the stream - this is where stuff happens
         const InstrPtr &instr = b.getInstr();

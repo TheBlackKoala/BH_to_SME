@@ -1,6 +1,7 @@
 using SME;
 using System;
 using System.Threading.Tasks;
+using static BohSME.ValuesConfig;
 
 /*Add to main program:
                         //Simulation
@@ -30,15 +31,14 @@ namespace BohSME
 
         private int a = 0;
 
-        private int len = 9;
-        private int[] data = new int[]{0,1,2,3,4,5,6,7,8};
-
         protected override void OnTick()
         {
-            if(a<len){
-                a1.val=data[a];
-                a=a+1;
+            for(int i =0; i<len; i++){
+                a1.val[i]=a+i;
             }
+            a1.valid=true;
+            a1.len=len;
+            a=a+len;
         }
     }
 
@@ -49,10 +49,19 @@ namespace BohSME
 
         public override async Task Run()
         {
-            for(int i =0; i<15; i++){
+            int a = 0;
+            for(int i=0; i<20; i++){
                 await ClockAsync();
-                int a = a3.val;
-                Console.WriteLine(a);
+                Console.WriteLine("I: {0}", i);
+                if(a3.valid){
+                    for(int j = 0; j<a3.len; j++){
+                        Console.WriteLine(a3.val[j]);
+                    }
+                    a += a3.len;
+                    if(a>=ValuesConfig.len*3){
+                        break;
+                    }
+                }
             }
         }
     }

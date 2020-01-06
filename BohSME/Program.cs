@@ -1,4 +1,5 @@
 using SME;
+using static BohSME.ValuesConfig;
 
 namespace BohSME
 {
@@ -55,7 +56,7 @@ namespace BohSME
 			repeatera2l3.a2l2 = a2l2;
 			//Connect  a1 to all l0 channels
 			//Simulation.Current.AddTopLevelInputs( a1 );
-			//Connect  a3 to the highest level channels with the corresponding name
+			//Connect  a2 to the highest level channels with the corresponding name
 			Simulation.Current.AddTopLevelOutputs( a3 );
 		}
 

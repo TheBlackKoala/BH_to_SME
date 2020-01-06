@@ -1,4 +1,5 @@
 using SME;
+using static BohSME.ValuesConfig;
 
 namespace BohSME
 {
@@ -13,7 +14,19 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a0l1.val = a1l0.val + a1l0.val;
+			if (a1l0.valid){
+				var minLen = a1l0.len;
+				a0l1.valid = true;
+				a0l1.len = minLen;
+				for(int i = 0; i<ValuesConfig.len - 1+1; i++){
+					if (i<minLen){
+						a0l1.val[i] = a1l0.val[i] + a1l0.val[i];
+					}
+				}
+			}
+			else{
+				a0l1.valid = false;
+			}
 		}
 	}
 
@@ -28,7 +41,19 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a2l2.val = a0l1.val + 2;
+			if (a0l1.valid){
+				var minLen = a0l1.len;
+				a2l2.valid = true;
+				a2l2.len = minLen;
+				for(int i = 0; i<ValuesConfig.len - 1+1; i++){
+					if (i<minLen){
+						a2l2.val[i] = a0l1.val[i] + 2;
+					}
+				}
+			}
+			else{
+				a2l2.valid = false;
+			}
 		}
 	}
 
@@ -46,7 +71,22 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a3l3.val = a0l2.val + a2l2.val;
+			if (a0l2.valid && a2l2.valid){
+				var minLen = a0l2.len;
+				if (minLen > a2l2.len){
+					minLen = a2l2.len;
+				}
+				a3l3.valid = true;
+				a3l3.len = minLen;
+				for(int i = 0; i<ValuesConfig.len - 1+1; i++){
+					if (i<minLen){
+						a3l3.val[i] = a0l2.val[i] + a2l2.val[i];
+					}
+				}
+			}
+			else{
+				a3l3.valid = false;
+			}
 		}
 	}
 
@@ -61,7 +101,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a0l2.val =a0l1.val;
+			if (a0l1.valid){
+				a0l2.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a0l1.len){
+						a0l2.val[i] = a0l1.val[i];
+					}
+				}
+				a0l2.len = a0l1.len;
+			}
+			else{
+				a0l2.valid = false;
+			}
 		}
 	}
 
@@ -76,7 +127,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a0l3.val =a0l2.val;
+			if (a0l2.valid){
+				a0l3.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a0l2.len){
+						a0l3.val[i] = a0l2.val[i];
+					}
+				}
+				a0l3.len = a0l2.len;
+			}
+			else{
+				a0l3.valid = false;
+			}
 		}
 	}
 
@@ -91,7 +153,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a1l1.val =a1l0.val;
+			if (a1l0.valid){
+				a1l1.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a1l0.len){
+						a1l1.val[i] = a1l0.val[i];
+					}
+				}
+				a1l1.len = a1l0.len;
+			}
+			else{
+				a1l1.valid = false;
+			}
 		}
 	}
 
@@ -106,7 +179,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a1l2.val =a1l1.val;
+			if (a1l1.valid){
+				a1l2.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a1l1.len){
+						a1l2.val[i] = a1l1.val[i];
+					}
+				}
+				a1l2.len = a1l1.len;
+			}
+			else{
+				a1l2.valid = false;
+			}
 		}
 	}
 
@@ -121,7 +205,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a1l3.val =a1l2.val;
+			if (a1l2.valid){
+				a1l3.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a1l2.len){
+						a1l3.val[i] = a1l2.val[i];
+					}
+				}
+				a1l3.len = a1l2.len;
+			}
+			else{
+				a1l3.valid = false;
+			}
 		}
 	}
 
@@ -136,7 +231,18 @@ namespace BohSME
 
 		protected override void OnTick()
 		{
-			a2l3.val =a2l2.val;
+			if (a2l2.valid){
+				a2l3.valid=true;
+				for(int i = 0; i<ValuesConfig.len -1+1; i++){
+					if ( i < a2l2.len){
+						a2l3.val[i] = a2l2.val[i];
+					}
+				}
+				a2l3.len = a2l2.len;
+			}
+			else{
+				a2l3.valid = false;
+			}
 		}
 	}
 

@@ -24,7 +24,8 @@ outps[0].close()
 outps = outps[1:]
 
 def writeStart(f):
-    f.write("using SME;\n\n")
+    f.write("using SME;\n")
+    f.write("using static " + projectname + ".ValuesConfig;\n\n")
     f.write("namespace " + projectname + "\n{\n")
 
 def endMainFile(f):
@@ -32,8 +33,11 @@ def endMainFile(f):
     f.write("\t\tpublic static void Main(string[] args)\n\t\t{\n\n\t\t\tusing(var sim = new Simulation())\n\t\t\t{\n\n\t\t\t\tsetup();\n\n\t\t\t\t// Use fluent syntax to configure the simulator.\n\t\t\t\t// The order does not matter, but `Run()` must be\n\t\t\t\t// the last method called.\n\n\t\t\t\t// The top-level input and outputs are exposed\n\t\t\t\t// for interfacing with other VHDL code or board pins\n\n\t\t\t\tsim\n\t\t\t\t\t.AddTopLevelOutputs()\n\t\t\t\t\t.AddTopLevelInputs()\n\t\t\t\t\t.BuildCSVFile()\n\t\t\t\t\t.BuildVHDL()\n\t\t\t\t\t.Run();\n\n\t\t\t\t// After `Run()` has been invoked the folder\n\t\t\t\t// `output/vhdl` contains a Makefile that can\n\t\t\t\t// be used for testing the generated design\n\t\t\t}\n\t\t}\n\t}\n}\n")
 
 def parse(inp):
+    indentlvl = 2
     index = 0
     line = inp.readline()
+    #Whether we are inside a proccess currently
+    proc = False
     #Whether the next channels is an output
     output = False
     #Number of instructions
@@ -60,12 +64,21 @@ def parse(inp):
             #Hardcoded bus - C# is too different from smeil to be easily translatable in this respect
             else:
                 if"tdata" in line:
-                    outps[index].write("\t[ClockedBus, InitializedBus]\n")
+                    outps[index].write("\t[ClockedBus]\n")
                     outps[index].write("\tpublic interface tdata : IBus\n")
                     outps[index].write("\t{\n")
+                    outps[index].write("\t\t[InitialValue(false)]\n")
+                    outps[index].write("\t\tbool valid { get; set; }\n")
+                    outps[index].write("\t\t[FixedArrayLength(ValuesConfig.len)]\n")
+                    outps[index].write("\t\tIFixedArray<int> val{ get; set; }\n")
                     outps[index].write("\t\t[InitialValue(0)]\n")
-                    outps[index].write("\t\tint val { get; set; }\n")
+                    outps[index].write("\t\tint len { get; set; }\n")
                     outps[index].write("\t}\n")
+                elif "const " in line:
+                    outps[index].write("\tpublic static class ValuesConfig{\n")
+                    outps[index].write("\t\tpublic const int len = 32;\n")
+                    outps[index].write("\t}\n")
+
         #Write the processes
         elif(index==1):
             if "network" in line:
@@ -74,46 +87,73 @@ def parse(inp):
                 writeStart(outps[index])
                 continue
             else:
-                if "proc" in line:
-                    #Write instructions
-                    if "instr" in line:
-                        insts += 1
-                        line = line.split("proc ")[1].split("()")[0]
-                        outps[index].write("\t[ClockedProcess]\n")
-                        outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
-                        outps[index].write("\t{\n")
-                        curProc=line
-                    #Write repeaters
-                    elif "repeater" in line:
-                        line = line.split("proc ")[1].split("()")[0]
-                        reps.append(line)
-                        outps[index].write("\t[ClockedProcess]\n")
-                        outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
-                        outps[index].write("\t{\n")
-                        curProc=line
-                #Write the buses
-                elif line.startswith("\tbus"):
-                    bus = line.split("bus ")[1].split(" {")[0].split(": ")[0]
-                    if(output):
-                        outps[index].write("\t\t[OutputBus]\n")
-                        output= False
-                        outs.append((bus,curProc))
-                        ins.append(list())
-                    else:
-                        outps[index].write("\t\t[InputBus]\n")
-                        ins[len(ins)-1].append((bus,curProc))
-                    outps[index].write("\t\tpublic tdata " + bus + ";\n\n")
-                #The next bus will be an output bus
-                elif line == "\t//Output\n":
-                    output=True
-                #create the processes function
-                elif "val =" in line:
-                    outps[index].write("\t\tprotected override void OnTick()\n")
-                    outps[index].write("\t\t{\n")
-                    outps[index].write("\t\t"+line)
-                    outps[index].write("\t\t}\n")
-                elif line=="}\n":
-                    outps[index].write("\t}\n\n")
+                if not proc:
+                    if "proc" in line:
+                        proc=True
+                        #Write instructions
+                        if "instr" in line:
+                            insts += 1
+                            line = line.split("proc ")[1].split("()")[0]
+                            outps[index].write("\t[ClockedProcess]\n")
+                            outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
+                            outps[index].write("\t{\n")
+                            curProc=line
+                        #Write repeaters
+                        elif "repeater" in line:
+                            line = line.split("proc ")[1].split("()")[0]
+                            reps.append(line)
+                            outps[index].write("\t[ClockedProcess]\n")
+                            outps[index].write("\tpublic class " + line + " : SimpleProcess\n")
+                            outps[index].write("\t{\n")
+                            curProc=line
+                #Inside the process
+                else:
+                    #Write the buses
+                    if line.startswith("\tbus"):
+                        bus = line.split("bus ")[1].split(" {")[0].split(": ")[0]
+                        if(output):
+                            outps[index].write("\t\t[OutputBus]\n")
+                            output= False
+                            outs.append((bus,curProc))
+                            ins.append(list())
+                        else:
+                            outps[index].write("\t\t[InputBus]\n")
+                            ins[len(ins)-1].append((bus,curProc))
+                        outps[index].write("\t\tpublic tdata " + bus + ";\n\n")
+                    #The next bus will be an output bus
+                    elif line == "\t//Output\n":
+                        output=True
+                    elif line == "{\n":
+                        outps[index].write("\t\tprotected override void OnTick()\n")
+                        outps[index].write("\t\t{\n")
+                    elif "if (" in line:
+                        outps[index].write("\t\t"+line)
+                        indentlvl +=1
+                    elif "else{" in line:
+                        outps[index].write("\t\t"+line)
+                        indentlvl +=1
+                    elif "var " in line:
+                        outps[index].write("\t\t"+line)
+                    elif "for " in line:
+                        val = line.split("for ")[1].split(" to ")[0]
+                        end = line.split(" to ")[1].split(" {")[0]
+                        end = end.replace("len","ValuesConfig.len")
+                        outps[index].write("\t\t\t\tfor(int " + val + "; i<" + end + "+1; i++){\n")
+                        indentlvl +=1
+                    #create the processes function
+                    elif ".val[i] =" in line:
+                        outps[index].write("\t\t"+line)
+                    elif line=="}\n":
+                        outps[index].write("\t\t}\n")
+                        outps[index].write("\t}\n\n")
+                        proc=False
+                    elif "}\n" in line:
+                        outps[index].write(("\t"*indentlvl) + "}\n")
+                        indentlvl -=1
+                    elif ".len" in line:
+                        outps[index].write("\t\t"+line)
+                    elif ".valid" in line:
+                        outps[index].write("\t\t"+line)
         else:
             #Write the setup of the network
             if line.startswith("network"):
