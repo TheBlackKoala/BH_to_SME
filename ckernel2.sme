@@ -7,9 +7,10 @@ proc instr0()
 	//Output
 	bus a0l1: tdata;
 	bus a1l0: tdata;
+	var minLen : u32;
 {
 	if (a1l0.valid){
-		var minLen = a1l0.len;
+		minLen = a1l0.len;
 		a0l1.valid = true;
 		a0l1.len = minLen;
 		for i = 0 to len - 1 {
@@ -27,9 +28,10 @@ proc instr1()
 	//Output
 	bus a2l2: tdata;
 	bus a0l1: tdata;
+	var minLen : u32;
 {
 	if (a0l1.valid){
-		var minLen = a0l1.len;
+		minLen = a0l1.len;
 		a2l2.valid = true;
 		a2l2.len = minLen;
 		for i = 0 to len - 1 {
@@ -48,9 +50,10 @@ proc instr2()
 	bus a3l3: tdata;
 	bus a0l2: tdata;
 	bus a2l2: tdata;
+	var minLen : u32;
 {
 	if (a0l2.valid && a2l2.valid){
-		var minLen = a0l2.len;
+		minLen = a0l2.len;
 		if (minLen > a2l2.len){
 			minLen = a2l2.len;
 		}
@@ -181,7 +184,7 @@ proc repeatera2l3()
 	}
 }
 
-network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){
+network bohrium(in a1: tdata, out a3: tdata, out a2: tdata){
 	instance 0_inst of instr0();
 	instance 1_inst of instr1();
 	instance 2_inst of instr2();
@@ -199,10 +202,10 @@ network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){
 		repa1l2.a1l2 -> repa1l3.a1l2,
 
 		0_inst.a0l1 -> repa0l2.a0l1,
-		a1l0 -> 0_inst.a1l0,
+		a1 -> 0_inst.a1l0,
 		1_inst.a2l2 -> repa2l3.a2l2,
 		0_inst.a0l1 -> 1_inst.a0l1,
 		1_inst.a2l2 -> 2_inst.a2l2,
-		repa2l3 -> a2,
+		repa2l3.a2l3 -> a2,
 		2_inst.a3l3 -> a3;
 }

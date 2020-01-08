@@ -475,6 +475,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         }
       }
     }
+    ss << "\t" << "var minLen : u32;" << "\n";
     //The process body
     ss << "{" << "\n";
     //Valid guard
@@ -485,7 +486,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     ss.seekp(-4,ss.cur);
     ss << "){" << "\n";
     //Find the minimal length of arrays
-    ss << "\t" << "\t" << "var minLen = " << chan[1] << "l" << level-1 << ".len;" << "\n";
+    ss << "\t" << "\t" << "minLen = " << chan[1] << "l" << level-1 << ".len;" << "\n";
     for (uint i=2; i<chan.size(); i++){
       ss << "\t" << "\t" << "if (minLen > " << chan[i] << "l" << level-1 << ".len){" << "\n";
       ss <<"\t" << "\t" << "\t" << "minLen = " << chan[i] << "l" << level-1 << ".len;"<< "\n";
@@ -607,7 +608,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           ss << c  << "," << "\n";
         }
         else{
-          ss << "\t\t" << "rep" << c << "l" << level  << " -> ";
+          ss << "\t\t" << "rep" << c << "l" << level  << "."
+             << c << "l" << level  << " -> ";
           ss << c  << "," << "\n";
         }
       }
@@ -718,7 +720,6 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
             ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ",";
             ss << "\n";
           }
-
         }
         else{
           if(std::find(added.begin(), added.end(), c) == added.end()) {
@@ -726,12 +727,13 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
             auto it = std::find(out.begin(), out.end(), c);
             if( it == out.end()) {
               if(procLevel[proc-1]==1){
-                ss << "\t\t" << c << "l" << procLevel[proc-1]-1 << " -> ";
+                ss << "\t\t" << c << " -> ";
                 ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
               else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << " -> ";
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
+                   << c << "l" << procLevel[proc-1]-1  <<  " -> ";
                 ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
@@ -744,7 +746,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
                 ss << "," << "\n";
               }
               else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1 << " -> ";
+                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
+                   << c << "l" << procLevel[proc-1]-1  <<  " -> ";
                 ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
                 ss << "," << "\n";
               }
