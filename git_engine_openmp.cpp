@@ -712,7 +712,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         if(i == scanDist[proc]){
           proc++;
           out.push_back(c);
-          vector<string> added = {};
+          added.clear();;
           //If the output channel has a repeater then connect the data to it
           if(procLevel[proc-1]<level){
             ss << "\t\t";
@@ -725,6 +725,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           if(std::find(added.begin(), added.end(), c) == added.end()) {
             added.push_back(c);
             auto it = std::find(out.begin(), out.end(), c);
+
             if( it == out.end()) {
               if(procLevel[proc-1]==1){
                 ss << "\t\t" << c << " -> ";
