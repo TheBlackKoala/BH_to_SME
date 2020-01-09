@@ -1,4 +1,0 @@
-rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 9, reshapable, news: {a1,a2,}, frees: {a3,a2,}, temps: {a2,}, block list:
-    BH_ADD a2[0:9:1] a3[0:9:1] a3[0:9:1]
-    BH_ADD a1[0:9:1] a2[0:9:1] 2

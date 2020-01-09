@@ -123,6 +123,9 @@ def parse(inp):
                     #The next bus will be an output bus
                     elif line == "\t//Output\n":
                         output=True
+                    elif "var" in line:
+                        line = line.split(":")[0].split("var ")[1]
+                        outps[index].write("\t\tint " + line + ";\n")
                     elif line == "{\n":
                         outps[index].write("\t\tprotected override void OnTick()\n")
                         outps[index].write("\t\t{\n")

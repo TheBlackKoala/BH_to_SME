@@ -12,10 +12,11 @@ namespace BohSME
 		[InputBus]
 		public tdata a1l0;
 
+	int minLen ;
 		protected override void OnTick()
 		{
 			if (a1l0.valid){
-				var minLen = a1l0.len;
+				minLen = a1l0.len;
 				a0l1.valid = true;
 				a0l1.len = minLen;
 				for(int i = 0; i<ValuesConfig.len - 1+1; i++){
@@ -39,10 +40,11 @@ namespace BohSME
 		[InputBus]
 		public tdata a0l1;
 
+	int minLen ;
 		protected override void OnTick()
 		{
 			if (a0l1.valid){
-				var minLen = a0l1.len;
+				minLen = a0l1.len;
 				a2l2.valid = true;
 				a2l2.len = minLen;
 				for(int i = 0; i<ValuesConfig.len - 1+1; i++){
@@ -69,10 +71,11 @@ namespace BohSME
 		[InputBus]
 		public tdata a2l2;
 
+	int minLen ;
 		protected override void OnTick()
 		{
 			if (a0l2.valid && a2l2.valid){
-				var minLen = a0l2.len;
+				minLen = a0l2.len;
 				if (minLen > a2l2.len){
 					minLen = a2l2.len;
 				}
