@@ -12,7 +12,7 @@ namespace BohSME
 		[InputBus]
 		public tdata a1l0;
 
-	int minLen ;
+		int minLen ;
 		protected override void OnTick()
 		{
 			if (a1l0.valid){
@@ -40,7 +40,7 @@ namespace BohSME
 		[InputBus]
 		public tdata a0l1;
 
-	int minLen ;
+		int minLen ;
 		protected override void OnTick()
 		{
 			if (a0l1.valid){
@@ -71,7 +71,7 @@ namespace BohSME
 		[InputBus]
 		public tdata a2l2;
 
-	int minLen ;
+		int minLen ;
 		protected override void OnTick()
 		{
 			if (a0l2.valid && a2l2.valid){

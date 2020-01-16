@@ -32,7 +32,7 @@ namespace BohSME
 			repeatera1l3.a1l3 = a1l3;
 			var repeatera2l3 = new repeatera2l3();
 			var a2l3 = Scope.CreateBus<tdata>();
-                                                //Simulation
+                        //Simulation
                         var creater = new Creater();
                         var printer = new Printer();
 
@@ -53,8 +53,8 @@ namespace BohSME
 			repeatera1l3.a1l2 = a1l2;
 			repeatera2l3.a2l2 = a2l2;
 			//Connect  a1 to all l0 channels
-			Simulation.Current.AddTopLevelInputs( a1 );
-			//Connect  a3 to the highest level channels with the corresponding name
+			//Simulation.Current.AddTopLevelInputs( a1 );
+			//Connect  a2 to the highest level channels with the corresponding name
 			Simulation.Current.AddTopLevelOutputs( a3 );
 		}
 
