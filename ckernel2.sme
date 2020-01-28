@@ -184,7 +184,7 @@ proc repeatera2l3()
 	}
 }
 
-network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){
+network bohrium(in a1: tdata, out a3: tdata, out a2: tdata){
 	instance 0_inst of instr0();
 	instance 1_inst of instr1();
 	instance 2_inst of instr2();

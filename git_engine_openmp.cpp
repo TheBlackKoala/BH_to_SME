@@ -622,10 +622,40 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
   void blockWriter(const LoopB &kernel,
                    const SymbolTable &symbols,
                    const Scope *parent_scope,
-                   stringstream &ss
+                   stringstream &ss,
+                   vector<string> *chans,
+                   vector<int> *chanDist,
+                   vector<int> *procLevel,
+                   map<string, string> *chanSub,
+                   map<string, int> *chanLevel,
+                   int *count,
+                   int *level
                    ){
     //Scope for names and such
     jitk::Scope scope(symbols,parent_scope);
+
+
+    for (const Block &b: kernel._block_list){
+      //Make recursive function
+      if(b.isInstr()){
+        //Write the instruction to the stream - this is where stuff happens
+        const InstrPtr &instr = b.getInstr();
+        int instLevel = instrWriter(*instr,symbols,&scope,chans, chanDist, ss, (*count), chanSub,chanLevel,procLevel);
+        (*level) = max(instLevel,(*level));
+        (*count)++;
+      }
+      else{
+        //Loop information is for reading from memory with strides
+        blockWriter(b.getLoop(),symbols, &scope, ss, chans, chanDist, procLevel, chanSub, chanLevel, count, level);
+      }
+    }
+  }
+
+  void kernelWriter(const LoopB &kernel,
+               const SymbolTable &symbols,
+               stringstream &ss
+               )
+  {
     //List of channels
     vector<string> chans;
     //Number of channels in each process
@@ -641,126 +671,110 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //The highest level for repeaters
     int level = 0;
 
+    //Set the start of the sme-file up.
+    //If vdata is changed so might the neutral element ne
+    ss << "type vdata: i32;" << "\n";
+    ss << "const len: u32 = 32;" << "\n";
+    ss << "type adata: vdata [ len ];" << "\n";
+    ss << "type tdata: { val:adata; valid:bool = false; len:u32;};" << "\n" << "\n";
+    //Handle the blocks and instructions, do the heavy work
+    blockWriter(kernel, symbols, nullptr, ss, &chans, &chanDist, &procLevel,
+                &chanSub, &chanLevel, &count, &level);
 
-    for (const Block &b: kernel._block_list){
-      //Make recursive function
-      if(b.isInstr()){
-        if(count==0){
-          //Set the start of the sme-file up.
-          //If vdata is changed so might the neutral element ne
-          ss << "type vdata: i32;" << "\n";
-          ss << "const len: u32 = 32;" << "\n";
-          ss << "type adata: vdata [ len ];" << "\n";
-          ss << "type tdata: { val:adata; valid:bool = false; len:u32;};" << "\n" << "\n";
+    //Make a list of created channels inside the network (not from memory)
+    vector<string> news;
+    for (auto c : kernel.getAllNews()){
+      news.push_back(string("a") + to_string(symbols.baseID(c)));
+    }
+    //Make a list of all channels freed in the network
+    vector<string> frees;
+    for (auto c : kernel.getAllFrees()){
+      frees.push_back(string("a") + to_string(symbols.baseID(c)));
+    }
+
+    //Before setting the network up we need to create all the repeater processes
+    for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+      writeRepeaters(it->second, level, ss, it->first);
+    }
+
+    //Set the network up
+    writeNetworkStart(news, frees, chans, ss);
+    //Create instances of all processes
+    writeInstance(chanDist.size(),ss);
+    //Create an instance for all repeaters
+    for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+      instanceRepeaters(it->second, level, ss, it->first);
+    }
+
+    //Put the network together
+    ss << "\t" << "connect" << "\n";
+    //Connect all the repeaters and the base inputs
+    for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
+      connectRepeaters(it->second, level, ss, it->first);
+    }
+    ss << "\n";
+    //Use exclusive scan plus on chandist
+    vector<int> scanDist = {0};
+    for(uint i =0; i<chanDist.size(); i++){
+      scanDist.push_back(scanDist[i]+chanDist[i]);
+    }
+    //Write internal network and inputs to processes
+    int proc = 0;
+    vector<string> out;
+    vector<string> added;
+    for(uint i = 0; i<chans.size(); i++){
+      string c = chans[i];
+      if(i == scanDist[proc]){
+        proc++;
+        out.push_back(c);
+        added.clear();;
+        //If the output channel has a repeater then connect the data to it
+        if(procLevel[proc-1]<level){
+          ss << "\t\t";
+          ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]  << " -> ";
+          ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ",";
+          ss << "\n";
         }
-        //Write the instruction to the stream - this is where stuff happens
-        const InstrPtr &instr = b.getInstr();
-        int instLevel = instrWriter(*instr,symbols,&scope,&chans, &chanDist, ss, count, &chanSub,&chanLevel,&procLevel);
-        level = max(instLevel,level);
-        count++;
       }
       else{
-        //Loop information is for reading from memory with strides
-        blockWriter(b.getLoop(),symbols, &scope, ss);
-      }
-    }
-    //If this was instruktions write the end of the file containing the network
-    if (count>0){
-      //Make a list of created channels inside the network (not from memory)
-      vector<string> news;
-      for (auto c : kernel._news){
-        news.push_back(string("a") + to_string(symbols.baseID(c)));
-      }
-      //Make a list of all channels freed in the network
-      vector<string> frees;
-      for (auto c : kernel._frees){
-        frees.push_back(string("a") + to_string(symbols.baseID(c)));
-      }
+        if(std::find(added.begin(), added.end(), c) == added.end()) {
+          added.push_back(c);
+          auto it = std::find(out.begin(), out.end(), c);
 
-      //Before setting the network up we need to create all the repeater processes
-      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
-        writeRepeaters(it->second, level, ss, it->first);
-      }
-
-      //Set the network up
-      writeNetworkStart(news, frees, chans, ss);
-      //Create instances of all processes
-      writeInstance(chanDist.size(),ss);
-      //Create an instance for all repeaters
-      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
-        instanceRepeaters(it->second, level, ss, it->first);
-      }
-
-      //Put the network together
-      ss << "\t" << "connect" << "\n";
-      //Connect all the repeaters and the base inputs
-      for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
-        connectRepeaters(it->second, level, ss, it->first);
-      }
-      ss << "\n";
-      //Use exclusive scan plus on chandist
-      vector<int> scanDist = {0};
-      for(uint i =0; i<chanDist.size(); i++){
-        scanDist.push_back(scanDist[i]+chanDist[i]);
-      }
-      //Write internal network and inputs to processes
-      int proc = 0;
-      vector<string> out;
-      vector<string> added;
-      for(uint i = 0; i<chans.size(); i++){
-        string c = chans[i];
-        if(i == scanDist[proc]){
-          proc++;
-          out.push_back(c);
-          added.clear();;
-          //If the output channel has a repeater then connect the data to it
-          if(procLevel[proc-1]<level){
-            ss << "\t\t";
-            ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]  << " -> ";
-            ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ",";
-            ss << "\n";
-          }
-        }
-        else{
-          if(std::find(added.begin(), added.end(), c) == added.end()) {
-            added.push_back(c);
-            auto it = std::find(out.begin(), out.end(), c);
-
-            if( it == out.end()) {
-              if(procLevel[proc-1]==1){
-                ss << "\t\t" << c << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
-                ss << "," << "\n";
-              }
-              else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
-                   << c << "l" << procLevel[proc-1]-1  <<  " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
-                ss << "," << "\n";
-              }
+          if( it == out.end()) {
+            if(procLevel[proc-1]==1){
+              ss << "\t\t" << c << " -> ";
+              ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
+              ss << "," << "\n";
             }
-            else {
-              int index = std::distance(out.begin(), it);
-              if(procLevel[proc-1]==procLevel[index]+1){
-                ss << "\t\t" << index << "_inst." << c << "l" << procLevel[proc-1]-1 << " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
-                ss << "," << "\n";
-              }
-              else{
-                ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
-                   << c << "l" << procLevel[proc-1]-1  <<  " -> ";
-                ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
-                ss << "," << "\n";
-              }
+            else{
+              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
+                 << c << "l" << procLevel[proc-1]-1  <<  " -> ";
+              ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
+              ss << "," << "\n";
+            }
+          }
+          else {
+            int index = std::distance(out.begin(), it);
+            if(procLevel[proc-1]==procLevel[index]+1){
+              ss << "\t\t" << index << "_inst." << c << "l" << procLevel[proc-1]-1 << " -> ";
+              ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
+              ss << "," << "\n";
+            }
+            else{
+              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
+                 << c << "l" << procLevel[proc-1]-1  <<  " -> ";
+              ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
+              ss << "," << "\n";
             }
           }
         }
       }
-      //Then write the output channels
-      writeOutCh(out, frees, ss, level, procLevel);
-      //End the network definition
-      ss << "}" << "\n";
     }
+    //Then write the output channels
+    writeOutCh(out, frees, ss, level, procLevel);
+    //End the network definition
+    ss << "}" << "\n";
   }
   //fpga end
 
@@ -772,7 +786,7 @@ void EngineOpenMP::writeKernel(const LoopB &kernel,
   //fpga implementation
   cout << kernel << "\n";
   stringstream sme;
-  blockWriter(kernel, symbols, nullptr, sme);
+  kernelWriter(kernel, symbols, sme);
 
   //Write to file
   ofstream smeFile;

@@ -11,6 +11,7 @@ using static BohSME.ValuesConfig;
                         var a1 = Scope.CreateBus<tdata>();
                         creater.a1=a1;
                         var a3 = a3l3;
+                        var a2 = a2l3;
                         printer.a3=a3;
                         var a1l0= a1;
  */

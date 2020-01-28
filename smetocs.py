@@ -15,7 +15,7 @@ outputfiles = [projectname+".csproj","BusDefinitions.cs","Processes.cs", "Progra
 outps = [open(outputdir+"/"+f,"w+") for f in outputfiles]
 
 #Write the csproj file
-outps[0].write("<Project Sdk=\"Microsoft.NET.Sdk\">\n  <ItemGroup>\n    <PackageReference Include=\"SME\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.Tracer\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.VHDL\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.GraphViz\" Version=\"0.4.0-beta\" />\n    \n    <PackageReference Include=\"System.Drawing.Common\" Version=\"4.5.1\" />\n    <PackageReference Include=\"runtime.linux-x64.CoreCompat.System.Drawing\" Version=\"1.0.0-beta002\" />\n  </ItemGroup>\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>netcoreapp2.0</TargetFramework>\n    <RootNamespace>"\
+outps[0].write("<Project Sdk=\"Microsoft.NET.Sdk\">\n  <ItemGroup>\n    <PackageReference Include=\"SME\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.Tracer\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.VHDL\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.GraphViz\" Version=\"0.4.0-beta\" />\n    \n    <PackageReference Include=\"System.Drawing.Common\" Version=\"4.5.1\" />\n    <PackageReference Include=\"runtime.linux-x64.CoreCompat.System.Drawing\" Version=\"1.0.0-beta002\" />\n  </ItemGroup>\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>netcoreapp3.1</TargetFramework>\n    <RootNamespace>"\
                + projectname+\
                "</RootNamespace>\n  </PropertyGroup>\n\n</Project>\n")
 
@@ -171,9 +171,9 @@ def parse(inp):
 
                 outline = line
                 while("out " in outline):
-                    bus = inpline.split("out ")[1].split(": tdata",1)[0]
+                    bus = outline.split("out ")[1].split(": tdata")[0]
                     ends[1].append(bus)
-                    outline = outline.split("out ")[1].split(": tdata",1)[1]
+                    outline = outline.split("out ",1)[1].split(": tdata",1)[1]
                 for i in range(len(outs)):
                     #Instructions and repeaters created and set output bus
                     outps[index].write("\t\t\tvar " + outs[i][1] + " = new " + outs[i][1] + "();\n")
@@ -192,7 +192,7 @@ def parse(inp):
     outps[index].write("\t\t\tSimulation.Current.AddTopLevelInputs(" + sim[:-1] + " );\n")
     sim = ""
     for c in ends[1]:
-        sim = " " + c + ","
+        sim = sim + " " + c + ","
     outps[index].write("\t\t\t//Connect " + sim[:-1] + " to the highest level channels with the corresponding name\n")
     outps[index].write("\t\t\tSimulation.Current.AddTopLevelOutputs(" + sim[:-1] + " );\n")
     endMainFile(outps[index])
