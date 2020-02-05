@@ -429,6 +429,22 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     return level+1;
   }
 
+  void write_reduce(const bh_instruction &instr, const vector <string> &ops, stringstream &out) {
+    string op;
+    switch(instr.opcode) {
+      case BH_ADD_REDUCE: ;
+      case BH_MULTIPLY_REDUCE: ;
+      case BH_MINIMUM_REDUCE: ;
+      case BH_MAXIMUM_REDUCE: ;
+      case BH_LOGICAL_AND_REDUCE: ;
+      case BH_BITWISE_AND_REDUCE: ;
+      case BH_LOGICAL_OR_REDUCE: ;
+      case BH_BITWISE_OR_REDUCE: ;
+      case BH_LOGICAL_XOR_REDUCE: ;
+      case BH_BITWISE_XOR_REDUCE: ;
+    }
+  }
+
   //Functions to reduce the size of blockWriter
   int instrWriter(const bh_instruction &instr,
                   const SymbolTable &symbols,
@@ -476,6 +492,17 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       }
     }
     ss << "\t" << "var minLen : u32;" << "\n";
+
+    //If the operation includes reduce then we need to do some special things.
+    bool opp_is_reduce = bh_opcode_text(instr.opcode).find("REDUCE") != string::npos;
+    //Create the accumulater variable-array
+    if(opp_is_reduce){
+      //Accumulator array
+      ss << "\t" << "var acc : vdata [ len/2 ];" << "\n";
+      //Variable that will contain the factor to reduce the inner for-loop by.
+      ss << "\t" << "var lenReduc : u32;" << "\n";
+    }
+
     //The process body
     ss << "{" << "\n";
     //Valid guard
@@ -495,17 +522,55 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //The output will then be valid
     ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = true;" << "\n";
     ss << "\t" << "\t" << chan[0] << "l" << level << ".len = minLen;" << "\n";
-    //Set the for-loop
-    ss << "\t" << "\t" << "for i = 0 to len - 1 {" << "\n";
-    //Length guard
-    ss << "\t" << "\t" << "\t" << "if (i<minLen";
-    ss << "){" << "\n";
-    //Correct indentation
-    ss << "\t" << "\t" << "\t" << "\t";
-    write_operation(instr, opsWithLevel, ss, false);
-    //End for-loop and process
-    ss << "\t" << "\t" << "\t" << "}" << "\n";
-    ss << "\t" << "\t" << "}" << "\n";
+
+    //If the opcode contains reduce then use our specialized function for reduce on FPGA
+    if(opp_is_reduce){
+      //Set the for-loop
+      ss << "\t" << "\t" << "for j = 0 to reduceLen - 1 {" << "\n";
+
+      //Halve the min-length because each step is half the length of the previous
+      ss << "\t" << "\t" << "\t" << "minLen= minLen / 2;" << "\n";
+
+      //lenReduc is 2^(j+1)
+      ss << "\t" << "\t" << "\t" << "lenReduc = 2;" << "\n";
+      ss << "\t" << "\t" << "\t" << "for i = 0 to j-1 {" << "\n";
+      ss << "\t" << "\t" << "\t" << "\t" << "lenReduc = lenReduc*2;" << "\n";
+      ss << "\t" << "\t" << "\t" << "}" << "\n";
+
+      //The inner loop shall run len/2^(j+1) iterations for each iteration of j.
+      ss << "\t" << "\t" << "\t" << "for i = 0 to len / lenReduc {" << "\n";
+      //Length guard
+      ss << "\t" << "\t" << "\t" << "\t" << "if (i<minLen){" << "\n";
+
+      //Proper indenting
+      ss << "\t" << "\t" << "\t" << "\t" << "\t";
+      //Write the actual calculation
+      write_reduce(instr, opsWithLevel, ss);
+
+      //End the loops and length-guard
+      ss << "\t" << "\t"  << "\t"<< "\t" << "}" << "\n";
+      ss << "\t" << "\t" << "\t" << "}" << "\n";
+      ss << "\t"  << "\t" << "}" << "\n";
+      //Set the output value
+      ss << "\t" << chan[0] << "l" << level << ".val[0] = acc[0];" << "\n";
+    }
+    //Otherwise just use the normal operation function
+    else{
+      //Set the for-loop
+      ss << "\t" << "\t" << "for i = 0 to len - 1 {" << "\n";
+      //Length guard
+      ss << "\t" << "\t" << "\t" << "if (i<minLen){" << "\n";
+      //Correct indentation
+      ss << "\t" << "\t" << "\t" << "\t";
+
+      //The actual operation
+      write_operation(instr, opsWithLevel, ss, false);
+
+      //End for-loop
+      ss << "\t" << "\t" << "\t" << "}" << "\n";
+      ss << "\t" << "\t" << "}" << "\n";
+    }
+    //Close the if-vaid-guard
     ss << "\t" << "}" << "\n";
     //If the inputs are not valid then the output is not valid
     ss << "\t" << "else{" << "\n";
@@ -516,7 +581,40 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     return level;
   }
 
-  void writeNetworkStart(vector<string> news, vector<string> frees, vector<string> chans, stringstream &ss){
+  void blockWriter(const LoopB &kernel,
+                   const SymbolTable &symbols,
+                   const Scope *parent_scope,
+                   stringstream &ss,
+                   vector<string> *chans,
+                   vector<int> *chanDist,
+                   vector<int> *procLevel,
+                   map<string, string> *chanSub,
+                   map<string, int> *chanLevel,
+                   int *count,
+                   int *level
+                   ){
+    //Scope for names and such
+    jitk::Scope scope(symbols,parent_scope);
+
+
+    for (const Block &b: kernel._block_list){
+      //Make recursive function
+      if(b.isInstr()){
+        //Write the instruction to the stream - this is where stuff happens
+        const InstrPtr &instr = b.getInstr();
+        int instLevel = instrWriter(*instr,symbols,&scope,chans, chanDist, ss, (*count), chanSub,chanLevel,procLevel);
+        (*level) = max(instLevel,(*level));
+        (*count)++;
+      }
+      else{
+        //Loop information is for reading from memory with strides
+        blockWriter(b.getLoop(),symbols, &scope, ss, chans, chanDist, procLevel, chanSub, chanLevel, count, level);
+      }
+    }
+  }
+
+  //Helper functions for kernelWriter
+    void writeNetworkStart(vector<string> news, vector<string> frees, vector<string> chans, stringstream &ss){
     string name = "bohrium";
     ss << "network " << name <<"(";
     //Outside channels - currently memory
@@ -618,38 +716,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     ss.seekp(-2,ss.cur);
     ss << ";" << "\n";
   }
-
-  void blockWriter(const LoopB &kernel,
-                   const SymbolTable &symbols,
-                   const Scope *parent_scope,
-                   stringstream &ss,
-                   vector<string> *chans,
-                   vector<int> *chanDist,
-                   vector<int> *procLevel,
-                   map<string, string> *chanSub,
-                   map<string, int> *chanLevel,
-                   int *count,
-                   int *level
-                   ){
-    //Scope for names and such
-    jitk::Scope scope(symbols,parent_scope);
-
-
-    for (const Block &b: kernel._block_list){
-      //Make recursive function
-      if(b.isInstr()){
-        //Write the instruction to the stream - this is where stuff happens
-        const InstrPtr &instr = b.getInstr();
-        int instLevel = instrWriter(*instr,symbols,&scope,chans, chanDist, ss, (*count), chanSub,chanLevel,procLevel);
-        (*level) = max(instLevel,(*level));
-        (*count)++;
-      }
-      else{
-        //Loop information is for reading from memory with strides
-        blockWriter(b.getLoop(),symbols, &scope, ss, chans, chanDist, procLevel, chanSub, chanLevel, count, level);
-      }
-    }
-  }
+  //End of helper functions for kernelWriter
 
   void kernelWriter(const LoopB &kernel,
                const SymbolTable &symbols,
@@ -675,6 +742,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //If vdata is changed so might the neutral element ne
     ss << "type vdata: i32;" << "\n";
     ss << "const len: u32 = 32;" << "\n";
+    ss << "const reduceLen : u32 = log(len);" << "\n";
     ss << "type adata: vdata [ len ];" << "\n";
     ss << "type tdata: { val:adata; valid:bool = false; len:u32;};" << "\n" << "\n";
     //Handle the blocks and instructions, do the heavy work
