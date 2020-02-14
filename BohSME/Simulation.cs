@@ -14,6 +14,16 @@ using static BohSME.ValuesConfig;
                         var a2 = a2l3;
                         printer.a3=a3;
                         var a1l0= a1;
+
+                        //Simulation for reduction
+                        var creater = new Creater();
+                        var printer = new Printer();
+
+                        var a2 = Scope.CreateBus<tdata>();
+                        creater.a1=a2;
+                        var a3 = a4l3;
+                        printer.a3=a3;
+                        var a2l0= a2;
  */
 namespace BohSME
 {

@@ -6,6 +6,7 @@ a = bh.array(range(9)).reshape(3,3)
 a = a+a
 b = a-2
 a = a+b
+a = bh.add.reduce(a)
 #b = a[:-1]
 #c = b+2
 #a = a+a[::-1]

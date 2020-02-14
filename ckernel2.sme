@@ -1,129 +1,127 @@
 type vdata: i32;
 const len: u32 = 32;
+const reduceLen : u32 = log(len);
 type adata: vdata [ len ];
 type tdata: { val:adata; valid:bool = false; len:u32;};
 
 proc instr0()
 	//Output
-	bus a0l1: tdata;
-	bus a1l0: tdata;
+	bus a1l1: tdata;
+	bus a2l0: tdata;
 	var minLen : u32;
 {
-	if (a1l0.valid){
-		minLen = a1l0.len;
-		a0l1.valid = true;
-		a0l1.len = minLen;
+	if (a2l0.valid){
+		minLen = a2l0.len;
+		a1l1.valid = true;
+		a1l1.len = minLen;
 		for i = 0 to len - 1 {
 			if (i<minLen){
-				a0l1.val[i] = a1l0.val[i] + a1l0.val[i];
+				a1l1.val[i] = a2l0.val[i] + a2l0.val[i];
 			}
 		}
 	}
 	else{
-		a0l1.valid = false;
+		a1l1.valid = false;
 	}
 }
 
 proc instr1()
 	//Output
-	bus a2l2: tdata;
-	bus a0l1: tdata;
+	bus a3l2: tdata;
+	bus a1l1: tdata;
 	var minLen : u32;
 {
-	if (a0l1.valid){
-		minLen = a0l1.len;
-		a2l2.valid = true;
-		a2l2.len = minLen;
+	if (a1l1.valid){
+		minLen = a1l1.len;
+		a3l2.valid = true;
+		a3l2.len = minLen;
 		for i = 0 to len - 1 {
 			if (i<minLen){
-				a2l2.val[i] = a0l1.val[i] - 2;
+				a3l2.val[i] = a1l1.val[i] - 2;
 			}
 		}
 	}
 	else{
-		a2l2.valid = false;
+		a3l2.valid = false;
 	}
 }
 
 proc instr2()
 	//Output
-	bus a3l3: tdata;
-	bus a0l2: tdata;
-	bus a2l2: tdata;
+	bus a4l3: tdata;
+	bus a1l2: tdata;
+	bus a3l2: tdata;
 	var minLen : u32;
 {
-	if (a0l2.valid && a2l2.valid){
-		minLen = a0l2.len;
-		if (minLen > a2l2.len){
-			minLen = a2l2.len;
+	if (a1l2.valid && a3l2.valid){
+		minLen = a1l2.len;
+		if (minLen > a3l2.len){
+			minLen = a3l2.len;
 		}
-		a3l3.valid = true;
-		a3l3.len = minLen;
+		a4l3.valid = true;
+		a4l3.len = minLen;
 		for i = 0 to len - 1 {
 			if (i<minLen){
-				a3l3.val[i] = a0l2.val[i] + a2l2.val[i];
+				a4l3.val[i] = a1l2.val[i] + a3l2.val[i];
 			}
 		}
 	}
 	else{
-		a3l3.valid = false;
+		a4l3.valid = false;
 	}
 }
 
-proc repeatera0l2()
+proc instr3()
 	//Output
-	bus a0l2: tdata;
-	bus a0l1: tdata;
+	bus a0l4: tdata;
+	bus a4l3: tdata;
+	var minLen : u32;
+	var acc : vdata [ len/2 ];
+	var lenReduc : u32;
+	var minLen2 : u32;
 {
-	if (a0l1.valid){
-		a0l2.valid=true;
-		for i = 0 to len -1 {
-			if ( i < a0l1.len){
-				a0l2.val[i] = a0l1.val[i];
+	if (a4l3.valid){
+		minLen = a4l3.len;
+		a0l4.valid = true;
+		a0l4.len = 1;
+		lenReduc = len;
+		for j = 0 to reduceLen - 1 {
+			lenReduc = lenReduc/2;
+			minLen2 = minLen/2;
+			for i = 0 to lenReduc - 1 {
+				if (i<minLen2){
+					if(j==0){
+						if(i==0){
+							acc[0] = acc[0] + a4l3.val[i*2] + a4l3.val[i*2+1];
+						}
+						else{
+							acc[i] = a4l3.val[i*2] + a4l3.val[i*2+1];
+						}
+					}
+					else{
+						acc[i] = acc[i*2] + acc[i*2+1];
+					}
+				}
+				elif(i==minLen2 && minLen-minLen2!=minLen2){
+					if(j==0){
+						acc[i] = a4l3.val[i*2];
+					}
+					else{
+						acc[i] = acc[i*2];
+					}
+				}
+			}
+			if(minLen-minLen2!=minLen2){
+				minLen = minLen2+1;
+			}
+			else{
+				minLen= minLen2;
 			}
 		}
-		a0l2.len = a0l1.len;
+		a0l4.val[0] = acc[0];
 	}
 	else{
-		a0l2.valid = false;
-	}
-}
-
-proc repeatera0l3()
-	//Output
-	bus a0l3: tdata;
-	bus a0l2: tdata;
-{
-	if (a0l2.valid){
-		a0l3.valid=true;
-		for i = 0 to len -1 {
-			if ( i < a0l2.len){
-				a0l3.val[i] = a0l2.val[i];
-			}
-		}
-		a0l3.len = a0l2.len;
-	}
-	else{
-		a0l3.valid = false;
-	}
-}
-
-proc repeatera1l1()
-	//Output
-	bus a1l1: tdata;
-	bus a1l0: tdata;
-{
-	if (a1l0.valid){
-		a1l1.valid=true;
-		for i = 0 to len -1 {
-			if ( i < a1l0.len){
-				a1l1.val[i] = a1l0.val[i];
-			}
-		}
-		a1l1.len = a1l0.len;
-	}
-	else{
-		a1l1.valid = false;
+		a0l4.valid = false;
 	}
 }
 
@@ -165,6 +163,63 @@ proc repeatera1l3()
 	}
 }
 
+proc repeatera1l4()
+	//Output
+	bus a1l4: tdata;
+	bus a1l3: tdata;
+{
+	if (a1l3.valid){
+		a1l4.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a1l3.len){
+				a1l4.val[i] = a1l3.val[i];
+			}
+		}
+		a1l4.len = a1l3.len;
+	}
+	else{
+		a1l4.valid = false;
+	}
+}
+
+proc repeatera2l1()
+	//Output
+	bus a2l1: tdata;
+	bus a2l0: tdata;
+{
+	if (a2l0.valid){
+		a2l1.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a2l0.len){
+				a2l1.val[i] = a2l0.val[i];
+			}
+		}
+		a2l1.len = a2l0.len;
+	}
+	else{
+		a2l1.valid = false;
+	}
+}
+
+proc repeatera2l2()
+	//Output
+	bus a2l2: tdata;
+	bus a2l1: tdata;
+{
+	if (a2l1.valid){
+		a2l2.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a2l1.len){
+				a2l2.val[i] = a2l1.val[i];
+			}
+		}
+		a2l2.len = a2l1.len;
+	}
+	else{
+		a2l2.valid = false;
+	}
+}
+
 proc repeatera2l3()
 	//Output
 	bus a2l3: tdata;
@@ -184,29 +239,115 @@ proc repeatera2l3()
 	}
 }
 
-network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){
+proc repeatera2l4()
+	//Output
+	bus a2l4: tdata;
+	bus a2l3: tdata;
+{
+	if (a2l3.valid){
+		a2l4.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a2l3.len){
+				a2l4.val[i] = a2l3.val[i];
+			}
+		}
+		a2l4.len = a2l3.len;
+	}
+	else{
+		a2l4.valid = false;
+	}
+}
+
+proc repeatera3l3()
+	//Output
+	bus a3l3: tdata;
+	bus a3l2: tdata;
+{
+	if (a3l2.valid){
+		a3l3.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a3l2.len){
+				a3l3.val[i] = a3l2.val[i];
+			}
+		}
+		a3l3.len = a3l2.len;
+	}
+	else{
+		a3l3.valid = false;
+	}
+}
+
+proc repeatera3l4()
+	//Output
+	bus a3l4: tdata;
+	bus a3l3: tdata;
+{
+	if (a3l3.valid){
+		a3l4.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a3l3.len){
+				a3l4.val[i] = a3l3.val[i];
+			}
+		}
+		a3l4.len = a3l3.len;
+	}
+	else{
+		a3l4.valid = false;
+	}
+}
+
+proc repeatera4l4()
+	//Output
+	bus a4l4: tdata;
+	bus a4l3: tdata;
+{
+	if (a4l3.valid){
+		a4l4.valid=true;
+		for i = 0 to len -1 {
+			if ( i < a4l3.len){
+				a4l4.val[i] = a4l3.val[i];
+			}
+		}
+		a4l4.len = a4l3.len;
+	}
+	else{
+		a4l4.valid = false;
+	}
+}
+
+network bohrium(in a2: tdata, out a3: tdata, out a0: tdata){
 	instance 0_inst of instr0();
 	instance 1_inst of instr1();
 	instance 2_inst of instr2();
+	instance 3_inst of instr3();
 
-	instance repa0l2 of repeatera0l2();
-	instance repa0l3 of repeatera0l3();
-	instance repa1l1 of repeatera1l1();
 	instance repa1l2 of repeatera1l2();
 	instance repa1l3 of repeatera1l3();
+	instance repa1l4 of repeatera1l4();
+	instance repa2l1 of repeatera2l1();
+	instance repa2l2 of repeatera2l2();
 	instance repa2l3 of repeatera2l3();
+	instance repa2l4 of repeatera2l4();
+	instance repa3l3 of repeatera3l3();
+	instance repa3l4 of repeatera3l4();
+	instance repa4l4 of repeatera4l4();
 	connect
-		repa0l2.a0l2 -> repa0l3.a0l2,
-		a1 -> repa1l1.a1l0,
-		repa1l1.a1l1 -> repa1l2.a1l1,
 		repa1l2.a1l2 -> repa1l3.a1l2,
+		repa1l3.a1l3 -> repa1l4.a1l3,
+		a2 -> repa2l1.a2l0,
+		repa2l1.a2l1 -> repa2l2.a2l1,
+		repa2l2.a2l2 -> repa2l3.a2l2,
+		repa2l3.a2l3 -> repa2l4.a2l3,
+		repa3l3.a3l3 -> repa3l4.a3l3,
 
-		0_inst.a0l1 -> repa0l2.a0l1,
-		a1 -> 0_inst.a1l0,
-		1_inst.a2l2 -> repa2l3.a2l2,
-		0_inst.a0l1 -> 1_inst.a0l1,
-		repa0l2.a0l2 -> 2_inst.a0l2,
-		1_inst.a2l2 -> 2_inst.a2l2,
-		repa2l3.a2l3 -> a2,
-		2_inst.a3l3 -> a3;
+		0_inst.a1l1 -> repa1l2.a1l1,
+		a2 -> 0_inst.a2l0,
+		1_inst.a3l2 -> repa3l3.a3l2,
+		0_inst.a1l1 -> 1_inst.a1l1,
+		2_inst.a4l3 -> repa4l4.a4l3,
+		repa1l2.a1l2 -> 2_inst.a1l2,
+		1_inst.a3l2 -> 2_inst.a3l2,
+		2_inst.a4l3 -> 3_inst.a4l3,
+		repa3l4.a3l4 -> a3,
+		3_inst.a0l4 -> a0;
 }

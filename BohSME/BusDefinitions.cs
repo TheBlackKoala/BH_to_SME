@@ -6,6 +6,9 @@ namespace BohSME
 	public static class ValuesConfig{
 		public const int len = 32;
 	}
+	public static class ValuesConfig{
+		public const int len = 32;
+	}
 	[ClockedBus]
 	public interface tdata : IBus
 	{

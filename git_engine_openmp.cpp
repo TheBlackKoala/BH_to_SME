@@ -392,7 +392,10 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
   }
 
   //Sets the level of all channels in the process and returns the level of the process
-  int findLevel(vector<pair<string,bool>> ops, map<string, int> *chanLevel, vector<string> *opsWithLevel){
+  int findLevel(vector<pair<string,bool>> ops,
+                map<string, int> *chanLevel,
+                vector<string> *opsWithLevel,
+                bool isReduce){
     int size = ops.size();
     int level = 0;
     //Find the highest level of the input buses
@@ -415,10 +418,25 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << op.first;
       if(op.second){
         if(i==0){
-          ss << "l" << level+1 << ".val" << "[i]";
+          if(isReduce){
+            ss << "l" << level+1 << ".val" << "[0]";
+          }
+          else{
+            ss << "l" << level+1 << ".val" << "[i]";
+          }
         }
         else{
-          ss << "l" << level << ".val" << "[i]";
+          if(isReduce){
+            //For reduce we need two operators on the same channel with different indexing
+            ss << "l" << level << ".val" << "[i*2]";
+            opsWithLevel->push_back(ss.str());
+            ss.str(string());
+            ss << op.first;
+            ss << "l" << level << ".val" << "[i*2+1]";
+          }
+          else{
+            ss << "l" << level << ".val" << "[i]";
+          }
         }
       }
       opsWithLevel->push_back(ss.str());
@@ -429,20 +447,108 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     return level+1;
   }
 
+  void write_reduce_op(stringstream &out, string operand, const vector <string> &ops, bool firstLoop){
+            //If we have an uneven number of values then we need to read the last value directly into the accumulator
+        if(firstLoop){
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+          out << "if(i==0){" << "\n";
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+          out << "acc[0] = acc[0]" << operand << ops[1] << operand << ops[2] << ";" << "\n";
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+          out << "else{" << "\n";
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+          out << "acc[i] = " << ops[1] << operand << ops[2] << ";" << "\n";
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+        }
+        else{
+          out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+          out << "acc[i] = " << ops[1] << operand << ops[2] << ";" << "\n";
+        }
+  }
+
   void write_reduce(const bh_instruction &instr, const vector <string> &ops, stringstream &out) {
-    string op;
+    stringstream op;
     switch(instr.opcode) {
-      case BH_ADD_REDUCE: ;
-      case BH_MULTIPLY_REDUCE: ;
-      case BH_MINIMUM_REDUCE: ;
-      case BH_MAXIMUM_REDUCE: ;
-      case BH_LOGICAL_AND_REDUCE: ;
-      case BH_BITWISE_AND_REDUCE: ;
-      case BH_LOGICAL_OR_REDUCE: ;
-      case BH_BITWISE_OR_REDUCE: ;
-      case BH_LOGICAL_XOR_REDUCE: ;
-      case BH_BITWISE_XOR_REDUCE: ;
+    case BH_ADD_REDUCE: op << " + "; break;
+    case BH_MULTIPLY_REDUCE: op << " * "; break;
+    case BH_MINIMUM_REDUCE: ; break;
+    case BH_MAXIMUM_REDUCE: ; break;
+    case BH_LOGICAL_AND_REDUCE: ; break;
+    case BH_BITWISE_AND_REDUCE: ; break;
+    case BH_LOGICAL_OR_REDUCE: ; break;
+    case BH_BITWISE_OR_REDUCE: ; break;
+    case BH_LOGICAL_XOR_REDUCE: ; break;
+    case BH_BITWISE_XOR_REDUCE: ; break;
     }
+    //Set the for-loop
+    out << "\t" << "\t" << "lenReduc = len;" << "\n";
+    out << "\t" << "\t" << "for j = 0 to reduceLen - 1 {" << "\n";
+
+    //lenReduc is len/2^n where n=j+1
+    out << "\t" << "\t" << "\t" << "lenReduc = lenReduc/2;" << "\n";
+
+    //Divide the available length by 2
+    out << "\t" << "\t" << "\t" << "minLen2 = minLen/2;" << "\n";
+
+    //The inner loop shall run len/2^n iterations for each iteration of j.
+    out << "\t" << "\t" << "\t" << "for i = 0 to lenReduc - 1 {" << "\n";
+
+    //Length guard
+    out << "\t" << "\t" << "\t" << "\t" << "if (i<minLen2){" << "\n";
+
+    //If we are running through the first loop then we need to read values from the input array
+    out << "\t" << "\t" << "\t" << "\t" << "\t";
+    out << "if(j==0){" << "\n";
+    write_reduce_op(out, op.str(), ops, true);
+
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+    //Otherwise read from accumulator
+    out << "\t" << "\t" << "\t" << "\t" << "\t";
+    out << "else{" << "\n";
+    vector<string> genericOps = vector<string>({"","acc[i*2]","acc[i*2+1]"});
+    write_reduce_op(out, op.str(), genericOps, false);
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+
+    //End the minimal length guard
+    out << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+    //If there is an un-even number of values we need to handle the last value
+    out << "\t" << "\t" << "\t" << "\t";
+    out << "elif(i==minLen2 && minLen-minLen2!=minLen2){" << "\n";
+    out << "\t" << "\t" << "\t" << "\t" << "\t";
+    //Either read from input channel or accumulator array
+    //Input
+    out << "if(j==0){" << "\n";
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+    out << "acc[i] = " << ops[1] << ";\n";
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+    //Accumulator
+    out << "\t" << "\t" << "\t" << "\t" << "\t";
+    out << "else{" << "\n";
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "\t";
+    out << "acc[i] = acc[i*2];" << "\n";
+    out << "\t" << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+
+    //End the inner-loop and length-guard
+    out << "\t" << "\t" << "\t" << "\t" << "}" << "\n";
+    out << "\t"  << "\t" << "\t" << "}" << "\n";
+
+    //If there is an un-even number of values we will have one more value than minLen2 indicates
+    out << "\t" << "\t" << "\t" ;
+    out << "if(minLen-minLen2!=minLen2){" << "\n";
+    out << "\t" << "\t" << "\t" << "\t";
+    out << "minLen = minLen2+1;\n";
+    out << "\t" << "\t" << "\t" << "}" << "\n";
+    //Otherwise we have the number minLen2 indicates
+    out << "\t" << "\t" << "\t";
+    out << "else{" << "\n";
+    out << "\t" << "\t" << "\t" << "\t";
+    out << "minLen= minLen2;" << "\n";
+    out << "\t" << "\t" << "\t" << "}" << "\n";
+
+    //End the outer-loop
+    out  << "\t" << "\t" << "}" << "\n";
   }
 
   //Functions to reduce the size of blockWriter
@@ -464,12 +570,16 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     vector<pair<string,bool>> ops;
     //Vector containing the channel-names including level
     vector<string> opsWithLevel;
+    //Find out if the operation is reduce
+    stringstream op;
+    op << bh_opcode_text(instr.opcode);
+    bool opp_is_reduce = op.str().find("REDUCE") != string::npos;
     //Counting number of channels in the process
     int c = 0;
     for (uint i=0; i<instr.operand.size(); i++){
       ops.push_back(smeGetName(instr, scope, instr.operand[i],chans,chanSub,&c));
     }
-    int level = findLevel(ops,chanLevel,&opsWithLevel);
+    int level = findLevel(ops,chanLevel,&opsWithLevel, opp_is_reduce);
     procLevel->push_back(level);
     chanDist->push_back(c);
     //Set the channels up in each process
@@ -491,91 +601,87 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         }
       }
     }
-    ss << "\t" << "var minLen : u32;" << "\n";
+    if(chans->size()>1){
+      ss << "\t" << "var minLen : u32;" << "\n";
+    }
 
-    //If the operation includes reduce then we need to do some special things.
-    bool opp_is_reduce = bh_opcode_text(instr.opcode).find("REDUCE") != string::npos;
-    //Create the accumulater variable-array
+    //Create the special variables for reduce-operations
     if(opp_is_reduce){
       //Accumulator array
       ss << "\t" << "var acc : vdata [ len/2 ];" << "\n";
-      //Variable that will contain the factor to reduce the inner for-loop by.
+      //Variables, one for the static length and one for the actual length
       ss << "\t" << "var lenReduc : u32;" << "\n";
+      ss << "\t" << "var minLen2 : u32;" << "\n";
     }
 
     //The process body
     ss << "{" << "\n";
-    //Valid guard
-    ss << "\t" << "if (";
-    for (uint i=1; i<chan.size(); i++){
-      ss << chan[i] << "l" << level-1 << ".valid && ";
-    }
-    ss.seekp(-4,ss.cur);
-    ss << "){" << "\n";
-    //Find the minimal length of arrays
-    ss << "\t" << "\t" << "minLen = " << chan[1] << "l" << level-1 << ".len;" << "\n";
-    for (uint i=2; i<chan.size(); i++){
-      ss << "\t" << "\t" << "if (minLen > " << chan[i] << "l" << level-1 << ".len){" << "\n";
-      ss <<"\t" << "\t" << "\t" << "minLen = " << chan[i] << "l" << level-1 << ".len;"<< "\n";
-      ss << "\t" << "\t" << "}" << "\n";
+    //Do not set this up if there is no input to this process
+    if(chans->size()>1){
+      //Valid guard
+      ss << "\t" << "if (";
+      for (uint i=1; i<chan.size(); i++){
+        ss << chan[i] << "l" << level-1 << ".valid && ";
+      }
+      ss.seekp(-4,ss.cur);
+      ss << "){" << "\n";
+
+      //Find the minimal length of arrays
+      ss << "\t" << "\t" << "minLen = " << chan[1] << "l" << level-1 << ".len;" << "\n";
+      for (uint i=2; i<chan.size(); i++){
+        ss << "\t" << "\t" << "if (minLen > " << chan[i] << "l" << level-1 << ".len){" << "\n";
+        ss <<"\t" << "\t" << "\t" << "minLen = " << chan[i] << "l" << level-1 << ".len;"<< "\n";
+        ss << "\t" << "\t" << "}" << "\n";
+      }
     }
     //The output will then be valid
     ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = true;" << "\n";
-    ss << "\t" << "\t" << chan[0] << "l" << level << ".len = minLen;" << "\n";
 
+    //If this is creating data then it will just write out the length
+    if(opp_is_reduce){
+      ss << "\t" << "\t" << chan[0] << "l" << level << ".len = 1;" << "\n";
+    }
+    else if(chans->size()>1){
+      ss << "\t" << "\t" << chan[0] << "l" << level << ".len = minLen;" << "\n";
+    }
+    else{
+      ss << "\t" << "\t" << chan[0] << "l" << level << ".len = len;" << "\n";
+    }
     //If the opcode contains reduce then use our specialized function for reduce on FPGA
     if(opp_is_reduce){
-      //Set the for-loop
-      ss << "\t" << "\t" << "for j = 0 to reduceLen - 1 {" << "\n";
-
-      //Halve the min-length because each step is half the length of the previous
-      ss << "\t" << "\t" << "\t" << "minLen= minLen / 2;" << "\n";
-
-      //lenReduc is 2^(j+1)
-      ss << "\t" << "\t" << "\t" << "lenReduc = 2;" << "\n";
-      ss << "\t" << "\t" << "\t" << "for i = 0 to j-1 {" << "\n";
-      ss << "\t" << "\t" << "\t" << "\t" << "lenReduc = lenReduc*2;" << "\n";
-      ss << "\t" << "\t" << "\t" << "}" << "\n";
-
-      //The inner loop shall run len/2^(j+1) iterations for each iteration of j.
-      ss << "\t" << "\t" << "\t" << "for i = 0 to len / lenReduc {" << "\n";
-      //Length guard
-      ss << "\t" << "\t" << "\t" << "\t" << "if (i<minLen){" << "\n";
-
-      //Proper indenting
-      ss << "\t" << "\t" << "\t" << "\t" << "\t";
-      //Write the actual calculation
+      //Write reduce operations
       write_reduce(instr, opsWithLevel, ss);
-
-      //End the loops and length-guard
-      ss << "\t" << "\t"  << "\t"<< "\t" << "}" << "\n";
-      ss << "\t" << "\t" << "\t" << "}" << "\n";
-      ss << "\t"  << "\t" << "}" << "\n";
       //Set the output value
-      ss << "\t" << chan[0] << "l" << level << ".val[0] = acc[0];" << "\n";
+      ss << "\t" << "\t" << chan[0] << "l" << level << ".val[0] = acc[0];" << "\n";
     }
     //Otherwise just use the normal operation function
     else{
       //Set the for-loop
       ss << "\t" << "\t" << "for i = 0 to len - 1 {" << "\n";
       //Length guard
-      ss << "\t" << "\t" << "\t" << "if (i<minLen){" << "\n";
-      //Correct indentation
+      if(chans->size()>1){
+        ss << "\t" << "\t" << "\t" << "if (i<minLen){" << "\n";
+        //Correct indentation
+      }
       ss << "\t" << "\t" << "\t" << "\t";
 
       //The actual operation
       write_operation(instr, opsWithLevel, ss, false);
 
       //End for-loop
-      ss << "\t" << "\t" << "\t" << "}" << "\n";
+      if(chans->size()>1){
+        ss << "\t" << "\t" << "\t" << "}" << "\n";
+      }
       ss << "\t" << "\t" << "}" << "\n";
     }
-    //Close the if-vaid-guard
-    ss << "\t" << "}" << "\n";
-    //If the inputs are not valid then the output is not valid
-    ss << "\t" << "else{" << "\n";
-    ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = false;" << "\n";
-    ss << "\t" << "}" << "\n";
+    if(chans->size()>1){
+      //Close the if-vaid-guard
+      ss << "\t" << "}" << "\n";
+      //If the inputs are not valid then the output is not valid
+      ss << "\t" << "else{" << "\n";
+      ss << "\t" << "\t" << chan[0] << "l" << level << ".valid = false;" << "\n";
+      ss << "\t" << "}" << "\n";
+    }
     //Close the process
     ss << "}" << "\n" << "\n";
     return level;
@@ -600,11 +706,20 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     for (const Block &b: kernel._block_list){
       //Make recursive function
       if(b.isInstr()){
-        //Write the instruction to the stream - this is where stuff happens
+
         const InstrPtr &instr = b.getInstr();
-        int instLevel = instrWriter(*instr,symbols,&scope,chans, chanDist, ss, (*count), chanSub,chanLevel,procLevel);
-        (*level) = max(instLevel,(*level));
-        (*count)++;
+        //Check if the instruction is identity
+        //Identity is used to create arrays used later, we want fresh arrays on FPGA
+        const bh_instruction &id = *instr;
+        stringstream ins;
+        ins << bh_opcode_text(id.opcode);
+        if(ins.str().find("IDENTITY")== string::npos){
+
+          //Write the instruction to the stream - this is where stuff happens
+          int instLevel = instrWriter(*instr,symbols,&scope,chans, chanDist, ss, (*count), chanSub,chanLevel,procLevel);
+          (*level) = max(instLevel,(*level));
+          (*count)++;
+        }
       }
       else{
         //Loop information is for reading from memory with strides
