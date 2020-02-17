@@ -1,14 +1,14 @@
 type vdata: i32;
-const len: u32 = 32;
-const reduceLen : u32 = log(len);
+const len: u = 32;
+const reduceLen : u = 5;//Has to be log(len)
 type adata: vdata [ len ];
-type tdata: { val:adata; valid:bool = false; len:u32;};
+type tdata: { val:adata; valid:bool = false; len:u;};
 
-proc instr0()
+clocked proc instr0()
 	//Output
 	bus a1l1: tdata;
 	bus a2l0: tdata;
-	var minLen : u32;
+	var minLen : u;
 {
 	if (a2l0.valid){
 		minLen = a2l0.len;
@@ -25,11 +25,11 @@ proc instr0()
 	}
 }
 
-proc instr1()
+clocked proc instr1()
 	//Output
 	bus a3l2: tdata;
 	bus a1l1: tdata;
-	var minLen : u32;
+	var minLen : u;
 {
 	if (a1l1.valid){
 		minLen = a1l1.len;
@@ -46,12 +46,12 @@ proc instr1()
 	}
 }
 
-proc instr2()
+clocked proc instr2()
 	//Output
 	bus a4l3: tdata;
 	bus a1l2: tdata;
 	bus a3l2: tdata;
-	var minLen : u32;
+	var minLen : u;
 {
 	if (a1l2.valid && a3l2.valid){
 		minLen = a1l2.len;
@@ -71,14 +71,14 @@ proc instr2()
 	}
 }
 
-proc instr3()
+clocked proc instr3()
 	//Output
 	bus a0l4: tdata;
 	bus a4l3: tdata;
-	var minLen : u32;
+	var minLen : u;
 	var acc : vdata [ len/2 ];
-	var lenReduc : u32;
-	var minLen2 : u32;
+	var lenReduc : u;
+	var minLen2 : u;
 {
 	if (a4l3.valid){
 		minLen = a4l3.len;
@@ -125,7 +125,7 @@ proc instr3()
 	}
 }
 
-proc repeatera1l2()
+clocked proc repeatera1l2()
 	//Output
 	bus a1l2: tdata;
 	bus a1l1: tdata;
@@ -144,7 +144,7 @@ proc repeatera1l2()
 	}
 }
 
-proc repeatera1l3()
+clocked proc repeatera1l3()
 	//Output
 	bus a1l3: tdata;
 	bus a1l2: tdata;
@@ -163,7 +163,7 @@ proc repeatera1l3()
 	}
 }
 
-proc repeatera1l4()
+clocked proc repeatera1l4()
 	//Output
 	bus a1l4: tdata;
 	bus a1l3: tdata;
@@ -182,7 +182,7 @@ proc repeatera1l4()
 	}
 }
 
-proc repeatera2l1()
+clocked proc repeatera2l1()
 	//Output
 	bus a2l1: tdata;
 	bus a2l0: tdata;
@@ -201,7 +201,7 @@ proc repeatera2l1()
 	}
 }
 
-proc repeatera2l2()
+clocked proc repeatera2l2()
 	//Output
 	bus a2l2: tdata;
 	bus a2l1: tdata;
@@ -220,7 +220,7 @@ proc repeatera2l2()
 	}
 }
 
-proc repeatera2l3()
+clocked proc repeatera2l3()
 	//Output
 	bus a2l3: tdata;
 	bus a2l2: tdata;
@@ -239,7 +239,7 @@ proc repeatera2l3()
 	}
 }
 
-proc repeatera2l4()
+clocked proc repeatera2l4()
 	//Output
 	bus a2l4: tdata;
 	bus a2l3: tdata;
@@ -258,7 +258,7 @@ proc repeatera2l4()
 	}
 }
 
-proc repeatera3l3()
+clocked proc repeatera3l3()
 	//Output
 	bus a3l3: tdata;
 	bus a3l2: tdata;
@@ -277,7 +277,7 @@ proc repeatera3l3()
 	}
 }
 
-proc repeatera3l4()
+clocked proc repeatera3l4()
 	//Output
 	bus a3l4: tdata;
 	bus a3l3: tdata;
@@ -296,7 +296,7 @@ proc repeatera3l4()
 	}
 }
 
-proc repeatera4l4()
+clocked proc repeatera4l4()
 	//Output
 	bus a4l4: tdata;
 	bus a4l3: tdata;

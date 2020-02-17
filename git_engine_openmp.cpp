@@ -564,7 +564,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
                   vector<int> *procLevel
                   ){
     //Setting the process up in sme
-    ss << "proc instr" << i << "()" << "\n";
+    ss << "clocked proc instr" << i << "()" << "\n";
     jitk::Scope scope(symbols,parent_scope);
     //Vector containing operands (arrays and constants) along with whether they are a channel or not. True means channel
     vector<pair<string,bool>> ops;
@@ -602,7 +602,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       }
     }
     if(chans->size()>1){
-      ss << "\t" << "var minLen : u32;" << "\n";
+      ss << "\t" << "var minLen : u;" << "\n";
     }
 
     //Create the special variables for reduce-operations
@@ -610,8 +610,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       //Accumulator array
       ss << "\t" << "var acc : vdata [ len/2 ];" << "\n";
       //Variables, one for the static length and one for the actual length
-      ss << "\t" << "var lenReduc : u32;" << "\n";
-      ss << "\t" << "var minLen2 : u32;" << "\n";
+      ss << "\t" << "var lenReduc : u;" << "\n";
+      ss << "\t" << "var minLen2 : u;" << "\n";
     }
 
     //The process body
@@ -757,7 +757,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
   //Write all repeaters for a channel. Start at the level after it is created (memory processes are 0 so start at 1 and end at the highest level of any process
   void writeRepeaters(int start, int end, stringstream &ss, string chanName){
     for(int i =start+1; i<=end; i++){
-      ss << "proc repeater" << chanName << "l" << i << "()" << "\n";
+      ss << "clocked proc repeater" << chanName << "l" << i << "()" << "\n";
       ss << "\t" << "//Output" << "\n";
       ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
       ss << "\t" << "bus " << chanName << "l" << i-1 << ": tdata;" << "\n";
@@ -838,6 +838,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
                stringstream &ss
                )
   {
+    //The length of arrays in SME, not in bohrium.
+    const int arrayLength = 32;
     //List of channels
     vector<string> chans;
     //Number of channels in each process
@@ -856,10 +858,10 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //Set the start of the sme-file up.
     //If vdata is changed so might the neutral element ne
     ss << "type vdata: i32;" << "\n";
-    ss << "const len: u32 = 32;" << "\n";
-    ss << "const reduceLen : u32 = log(len);" << "\n";
+    ss << "const len: u = " << arrayLength <<";" << "\n";
+    ss << "const reduceLen : u = " << log2(arrayLength) << ";//Has to be log(len)" << "\n";
     ss << "type adata: vdata [ len ];" << "\n";
-    ss << "type tdata: { val:adata; valid:bool = false; len:u32;};" << "\n" << "\n";
+    ss << "type tdata: { val:adata; valid:bool = false; len:u;};" << "\n" << "\n";
     //Handle the blocks and instructions, do the heavy work
     blockWriter(kernel, symbols, nullptr, ss, &chans, &chanDist, &procLevel,
                 &chanSub, &chanLevel, &count, &level);
