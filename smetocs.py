@@ -74,9 +74,10 @@ def parse(inp):
                     outps[index].write("\t\t[InitialValue(0)]\n")
                     outps[index].write("\t\tint len { get; set; }\n")
                     outps[index].write("\t}\n")
-                elif "const " in line:
+                elif "const len:" in line:
                     outps[index].write("\tpublic static class ValuesConfig{\n")
                     outps[index].write("\t\tpublic const int len = 32;\n")
+                    outps[index].write("\t\tpublic const int reduceLen = 5;\n")
                     outps[index].write("\t}\n")
 
         #Write the processes
@@ -124,27 +125,40 @@ def parse(inp):
                     elif line == "\t//Output\n":
                         output=True
                     elif "var" in line:
-                        line = line.split(":")[0].split("var ")[1]
-                        outps[index].write("\t\tint " + line + ";\n")
+                        if "acc" in line:
+                            arrLen = line.split("[ ")[1].split(" ]")[0]
+                            arrLen = arrLen.replace(" len "," ValuesConfig.len ")
+                            outps[index].write("\t"+ line.split("var")[0])
+                            outps[index].write("private readonly int[] acc = new int[" + arrLen + "/2];\n")
+                        else:
+                            line = line.split(":")[0].split("var ")[1]
+                            outps[index].write("\t\tint " + line + ";\n")
                     elif line == "{\n":
                         outps[index].write("\t\tprotected override void OnTick()\n")
                         outps[index].write("\t\t{\n")
-                    elif "if (" in line:
+                    elif "elif(" in line or "elif (" in line:
+                        outps[index].write("\t\t"+line.replace("elif","else if"))
+                        indentlvl +=1
+                    elif "if (" in line or "if(" in line:
                         outps[index].write("\t\t"+line)
                         indentlvl +=1
                     elif "else{" in line:
                         outps[index].write("\t\t"+line)
                         indentlvl +=1
-                    elif "var " in line:
-                        outps[index].write("\t\t"+line)
                     elif "for " in line:
-                        val = line.split("for ")[1].split(" to ")[0]
-                        end = line.split(" to ")[1].split(" {")[0]
-                        end = end.replace("len","ValuesConfig.len")
-                        outps[index].write("\t\t\t\tfor(int " + val + "; i<" + end + "+1; i++){\n")
+                        assign = line.split("for ")[1].split(" to ")[0]
+                        val = assign.split(" =")[0]
+                        end = line.split(" to")[1].split(" {")[0]
+                        end = end.replace(" len "," ValuesConfig.len ")
+                        end = end.replace(" reduceLen "," ValuesConfig.reduceLen ")
+                        outps[index].write("\t\t")
+                        indent = line.split("for ")[0]
+                        outps[index].write(indent + "for(int " + assign + "; " + val +"<" + end + "+1; "+ val + "++){\n")
                         indentlvl +=1
                     #create the processes function
-                    elif ".val[i] =" in line:
+                    elif ".val[" in line or "acc[" in line:
+                        outps[index].write("\t\t"+line)
+                    elif "minLen=" in line or "minLen =" in line:
                         outps[index].write("\t\t"+line)
                     elif line=="}\n":
                         outps[index].write("\t\t}\n")
@@ -156,6 +170,8 @@ def parse(inp):
                     elif ".len" in line:
                         outps[index].write("\t\t"+line)
                     elif ".valid" in line:
+                        outps[index].write("\t\t"+line)
+                    elif "lenReduc = " in line or "minLen2 = " in line:
                         outps[index].write("\t\t"+line)
         else:
             #Write the setup of the network

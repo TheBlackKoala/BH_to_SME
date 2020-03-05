@@ -602,16 +602,18 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       }
     }
     if(chans->size()>1){
-      ss << "\t" << "var minLen : u;" << "\n";
+      ss << "\t" << "var minLen : uint;" << "\n";
     }
 
     //Create the special variables for reduce-operations
     if(opp_is_reduce){
       //Accumulator array
-      ss << "\t" << "var acc : vdata [ len/2 ];" << "\n";
+      ss << "\t" << "var acc : vdata [ halfLen ];" << "\n";
       //Variables, one for the static length and one for the actual length
-      ss << "\t" << "var lenReduc : u;" << "\n";
-      ss << "\t" << "var minLen2 : u;" << "\n";
+      ss << "\t" << "var lenReduc : uint;" << "\n"
+         << "\t" << "var minLen2 : uint;" << "\n"
+         << "\t" << "var i : uint;" << "\n"
+         << "\t" << "var i : uint;" << "\n";
     }
 
     //The process body
@@ -755,36 +757,34 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
   }
 
   //Write all repeaters for a channel. Start at the level after it is created (memory processes are 0 so start at 1 and end at the highest level of any process
-  void writeRepeaters(int start, int end, stringstream &ss, string chanName){
-    for(int i =start+1; i<=end; i++){
-      ss << "clocked proc repeater" << chanName << "l" << i << "()" << "\n";
-      ss << "\t" << "//Output" << "\n";
-      ss << "\t" << "bus " << chanName << "l" << i << ": tdata;" << "\n";
-      ss << "\t" << "bus " << chanName << "l" << i-1 << ": tdata;" << "\n";
-      ss << "{" << "\n";
-      ss << "\t" << "if (" << chanName << "l" << i-1 << ".valid" << "){" << "\n";
-      ss << "\t" << "\t" << chanName << "l" << i << ".valid=true;" << "\n";
-      ss << "\t" << "\t" << "for i = 0 to len -1 {" << "\n";
-      ss << "\t" << "\t" << "\t" << "if ( i < " << chanName << "l" << i-1 << ".len" << "){" << "\n";
-      ss << "\t" << "\t" << "\t" << "\t" << chanName << "l" << i << ".val[i] = " << chanName << "l" << i-1 << ".val[i];" << "\n";
-      //End for-loop and process
-      ss << "\t" << "\t" << "\t" << "}" << "\n";
-      ss << "\t" << "\t" << "}" << "\n";
-      ss << "\t" << "\t" << chanName << "l" << i << ".len = " << chanName << "l" << i-1<< ".len;" << "\n";
-      ss << "\t" << "}" << "\n";
-      //If the input is not valid then the output is not valid
-      ss << "\t" << "else{" << "\n";
-      ss << "\t" << "\t" << chanName << "l" << i << ".valid = false;" << "\n";
-      ss << "\t" << "}" << "\n";
-      //Close the process
-      ss << "}" << "\n" << "\n";
-    }
+  void writeRepeater(stringstream &ss){
+    ss << "clocked proc repeater()" << "\n";
+    ss << "\t" << "//Output" << "\n";
+    ss << "\t" << "bus " << "output" << ": tdata;" << "\n";
+    ss << "\t" << "bus " << "input" << ": tdata;" << "\n";
+    ss << "{" << "\n";
+    ss << "\t" << "if (" << "input" << ".valid" << "){" << "\n";
+    ss << "\t" << "\t" << "output" << ".valid=true;" << "\n";
+    ss << "\t" << "\t" << "for i = 0 to len -1 {" << "\n";
+    ss << "\t" << "\t" << "\t" << "if ( i < " << "input" << ".len" << "){" << "\n";
+    ss << "\t" << "\t" << "\t" << "\t" << "output" << ".val[i] = " << "input" << ".val[i];" << "\n";
+    //End for-loop and process
+    ss << "\t" << "\t" << "\t" << "}" << "\n";
+    ss << "\t" << "\t" << "}" << "\n";
+    ss << "\t" << "\t" << "output" << ".len = " << "input" << ".len;" << "\n";
+    ss << "\t" << "}" << "\n";
+    //If the input is not valid then the output is not valid
+    ss << "\t" << "else{" << "\n";
+    ss << "\t" << "\t" << "output" << ".valid = false;" << "\n";
+    ss << "\t" << "}" << "\n";
+    //Close the process
+    ss << "}" << "\n" << "\n";
   }
 
   //Create instances of all repeaters of a channel. Like writeRepeaters.
   void instanceRepeaters(int start, int end, stringstream &ss, string chanName){
     for(int i =start+1; i<=end; i++){
-      ss << "\t" << "instance " << "rep" << chanName << "l" << i << " of " << "repeater" << chanName << "l" << i << "();\n";
+      ss << "\t" << "instance " << "rep" << chanName << "l" << i << " of " << "repeater();\n";
     }
   }
 
@@ -798,13 +798,11 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   void connectRepeaters(int start, int end, stringstream &ss, string chanName){
     if(start==0){
-      ss << "\t\t" << chanName  << " -> " << "rep" << chanName << "l1." << chanName << "l0" << "," << "\n";
+      ss << "\t\t" << chanName  << " -> " << "rep" << chanName << "l1.input," << "\n";
     }
     for(int i =start+2; i<=end; i++){
-      ss << "\t\t" << "rep" << chanName << "l" << i-1 << ".";
-      ss << chanName << "l" << i-1  << " -> ";
-      ss << "rep" << chanName << "l" << i << ".";
-      ss << chanName << "l" << i-1 << "," << "\n";
+      ss << "\t\t" << "rep" << chanName << "l" << i-1 << ".output" << " -> ";
+      ss << "rep" << chanName << "l" << i << ".input" << "," << "\n";
     }
   }
 
@@ -821,9 +819,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
           ss << c  << "," << "\n";
         }
         else{
-          ss << "\t\t" << "rep" << c << "l" << level  << "."
-             << c << "l" << level  << " -> ";
-          ss << c  << "," << "\n";
+          ss << "\t\t" << "rep" << c << "l" << level  << ".output" <<" -> " << c  << "," << "\n";
         }
       }
     }
@@ -858,10 +854,11 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     //Set the start of the sme-file up.
     //If vdata is changed so might the neutral element ne
     ss << "type vdata: i32;" << "\n";
-    ss << "const len: u = " << arrayLength <<";" << "\n";
-    ss << "const reduceLen : u = " << log2(arrayLength) << ";//Has to be log(len)" << "\n";
+    ss << "const len: uint = " << arrayLength <<";" << "\n";
+    ss << "const halfLen: uint = len/2;" << "\n";
+    ss << "const reduceLen : uint = " << log2(arrayLength) << ";//Has to be log(len)" << "\n";
     ss << "type adata: vdata [ len ];" << "\n";
-    ss << "type tdata: { val:adata; valid:bool = false; len:u;};" << "\n" << "\n";
+    ss << "type tdata: { val : adata; valid : bool = false; len : uint;};" << "\n" << "\n";
     //Handle the blocks and instructions, do the heavy work
     blockWriter(kernel, symbols, nullptr, ss, &chans, &chanDist, &procLevel,
                 &chanSub, &chanLevel, &count, &level);
@@ -877,10 +874,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       frees.push_back(string("a") + to_string(symbols.baseID(c)));
     }
 
-    //Before setting the network up we need to create all the repeater processes
-    for(auto it = chanLevel.begin(); it != chanLevel.end(); it++){
-      writeRepeaters(it->second, level, ss, it->first);
-    }
+    //Before setting the network up we need to create the repeater process
+    writeRepeater(ss);
 
     //Set the network up
     writeNetworkStart(news, frees, chans, ss);
@@ -917,7 +912,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
         if(procLevel[proc-1]<level){
           ss << "\t\t";
           ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]  << " -> ";
-          ss << "rep" << c << "l" << procLevel[proc-1]+1 << "." << c << "l" << procLevel[proc-1] << ",";
+          ss << "rep" << c << "l" << procLevel[proc-1]+1 << ".input" << ",";
           ss << "\n";
         }
       }
@@ -933,8 +928,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
               ss << "," << "\n";
             }
             else{
-              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
-                 << c << "l" << procLevel[proc-1]-1  <<  " -> ";
+              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1
+                 << ".output"  <<  " -> ";
               ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
               ss << "," << "\n";
             }
@@ -947,8 +942,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
               ss << "," << "\n";
             }
             else{
-              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1  << "."
-                 << c << "l" << procLevel[proc-1]-1  <<  " -> ";
+              ss << "\t\t" << "rep" << c << "l" << procLevel[proc-1]-1
+                 << ".output" <<  " -> ";
               ss << proc-1 << "_inst." << c << "l" << procLevel[proc-1]-1;
               ss << "," << "\n";
             }

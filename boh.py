@@ -1,11 +1,11 @@
 #!/usr/bin/dython
 #BH_OPENMP_VERBOSE=true
 import bohrium as bh
-
-a = bh.array(range(9)).reshape(3,3)
-a = a+a
-b = a-2
-a = a+b
+n= 2
+a = bh.array(range(32*n)).reshape(8*n,4)
+#a = a+a
+#b = a-2
+#a = a+b
 a = bh.add.reduce(a)
 #b = a[:-1]
 #c = b+2
