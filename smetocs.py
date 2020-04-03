@@ -44,10 +44,10 @@ def parse(inp):
     insts = 0
     #Name of all repeaters
     reps = list()
-    #In channels
-    ins = list()
-    #Out channels
-    outs = list()
+    #Instantiated buses
+    createds = list()
+    #Whether we are wiring up connections
+    connecting = False
     #Channels that either go out from or in to the network.
     ends = [list(),list()]
     curProc = ""
@@ -115,11 +115,8 @@ def parse(inp):
                         if(output):
                             outps[index].write("\t\t[OutputBus]\n")
                             output= False
-                            outs.append((bus,curProc))
-                            ins.append(list())
                         else:
                             outps[index].write("\t\t[InputBus]\n")
-                            ins[len(ins)-1].append((bus,curProc))
                         outps[index].write("\t\tpublic tdata " + bus + ";\n\n")
                     #The next bus will be an output bus
                     elif line == "\t//Output\n":
@@ -190,15 +187,44 @@ def parse(inp):
                     bus = outline.split("out ")[1].split(": tdata")[0]
                     ends[1].append(bus)
                     outline = outline.split("out ",1)[1].split(": tdata",1)[1]
-                for i in range(len(outs)):
-                    #Instructions and repeaters created and set output bus
-                    outps[index].write("\t\t\tvar " + outs[i][1] + " = new " + outs[i][1] + "();\n")
-                    outps[index].write("\t\t\tvar " + outs[i][0] + " = Scope.CreateBus<tdata>();\n")
-                    outps[index].write("\t\t\t" + outs[i][1]+ "." + outs[i][0] + " = " + outs[i][0] + ";\n")
-                for i in range(len(ins)):
-                    for c in ins[i]:
-                        outps[index].write("\t\t\t" + c[1] + "." + c[0] + " = " + c[0] + ";\n")
 
+            elif "instance" in line:
+                (name,func)= line.split("instance ")[1].split(" of ")
+                if "_" in name:
+                    (n1,n2) = name.split("_")
+                    name = n2+n1
+                outps[index].write("\t\t\tvar " + name + " = new " + func)
+
+            elif "connect" in line:
+                connecting=True
+            elif connecting:
+                if line!="\n":
+                    outbus = line.split(" -> ")[0].split("		")[1]
+                    inbus  = line.split(" -> ")[1].split(",")[0]
+                    if ";" in inbus:
+                        connecting = False
+                        inbus = inbus.split(";")[0]
+                    name = ""
+                    if "rep" in outbus:
+                        name = outbus.split("rep")[1].split(".")[0]
+                    elif "inst" in outbus:
+                        name = outbus.split(".")[1]
+                    else:
+                        name= outbus
+                    if "_" in inbus:
+                        (n1,n0) = inbus.split(".")
+                        (n1,n2) = n1.split("_")
+                        inbus = n2+n1+"."+n0
+                    if "_" in outbus:
+                        (n1,n0) = outbus.split(".")
+                        (n1,n2) = n1.split("_")
+                        outbus = n2+n1+"."+n0
+                    if not name in createds:
+                        outps[index].write("\t\t\tvar " + name + " = Scope.CreateBus<tdata>();\n")
+                        createds.append(name)
+                    if(name != outbus):
+                        outps[index].write("\t\t\t" + outbus + " = " + name + ";\n")
+                    outps[index].write("\t\t\t" + inbus  + " = " + name + ";\n")
 
         line = inp.readline()
     sim = ""

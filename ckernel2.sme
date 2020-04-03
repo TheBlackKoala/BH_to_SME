@@ -17,7 +17,7 @@ clocked proc instr0()
 		a1l1.len = minLen;
 		for i = 0 to len - 1 {
 			if (i<minLen){
-				a1l1.val[i] = a2l0.val[i] + a2l0.val[i];
+				a1l1.val[i] = a2l0.val[i] / ;
 			}
 		}
 	}
@@ -28,63 +28,19 @@ clocked proc instr0()
 
 clocked proc instr1()
 	//Output
-	bus a3l2: tdata;
+	bus a0l2: tdata;
 	bus a1l1: tdata;
 	var minLen : uint;
+	var acc : vdata [ halfLen ];
+	var lenReduc : uint;
+	var minLen2 : uint;
+	var i : uint;
+	var j : uint;
 {
 	if (a1l1.valid){
 		minLen = a1l1.len;
-		a3l2.valid = true;
-		a3l2.len = minLen;
-		for i = 0 to len - 1 {
-			if (i<minLen){
-				a3l2.val[i] = a1l1.val[i] - 2;
-			}
-		}
-	}
-	else{
-		a3l2.valid = false;
-	}
-}
-
-clocked proc instr2()
-	//Output
-	bus a4l3: tdata;
-	bus a1l2: tdata;
-	bus a3l2: tdata;
-	var minLen : uint;
-{
-	if (a1l2.valid && a3l2.valid){
-		minLen = a1l2.len;
-		if (minLen > a3l2.len){
-			minLen = a3l2.len;
-		}
-		a4l3.valid = true;
-		a4l3.len = minLen;
-		for i = 0 to len - 1 {
-			if (i<minLen){
-				a4l3.val[i] = a1l2.val[i] + a3l2.val[i];
-			}
-		}
-	}
-	else{
-		a4l3.valid = false;
-	}
-}
-
-clocked proc instr3()
-	//Output
-	bus a0l4: tdata;
-	bus a4l3: tdata;
-	var minLen : uint;
-	var acc : vdata [ len/2 ];
-	var lenReduc : uint;
-	var minLen2 : uint;
-{
-	if (a4l3.valid){
-		minLen = a4l3.len;
-		a0l4.valid = true;
-		a0l4.len = 1;
+		a0l2.valid = true;
+		a0l2.len = 1;
 		lenReduc = len;
 		for j = 0 to reduceLen - 1 {
 			lenReduc = lenReduc/2;
@@ -93,10 +49,10 @@ clocked proc instr3()
 				if (i<minLen2){
 					if(j==0){
 						if(i==0){
-							acc[0] = acc[0] + a4l3.val[i*2] + a4l3.val[i*2+1];
+							acc[0] = acc[0] + a1l1.val[i*2] + a1l1.val[i*2+1];
 						}
 						else{
-							acc[i] = a4l3.val[i*2] + a4l3.val[i*2+1];
+							acc[i] = a1l1.val[i*2] + a1l1.val[i*2+1];
 						}
 					}
 					else{
@@ -105,7 +61,7 @@ clocked proc instr3()
 				}
 				elif(i==minLen2 && minLen-minLen2!=minLen2){
 					if(j==0){
-						acc[i] = a4l3.val[i*2];
+						acc[i] = a1l1.val[i*2];
 					}
 					else{
 						acc[i] = acc[i*2];
@@ -119,10 +75,10 @@ clocked proc instr3()
 				minLen= minLen2;
 			}
 		}
-		a0l4.val[0] = acc[0];
+		a0l2.val[0] = acc[0];
 	}
 	else{
-		a0l4.valid = false;
+		a0l2.valid = false;
 	}
 }
 
@@ -145,39 +101,19 @@ clocked proc repeater()
 	}
 }
 
-network bohrium(in a2: tdata, out a3: tdata, out a0: tdata){
+network bohrium(in a2: tdata, out a0: tdata){
 	instance 0_inst of instr0();
 	instance 1_inst of instr1();
-	instance 2_inst of instr2();
-	instance 3_inst of instr3();
 
 	instance repa1l2 of repeater();
-	instance repa1l3 of repeater();
-	instance repa1l4 of repeater();
 	instance repa2l1 of repeater();
 	instance repa2l2 of repeater();
-	instance repa2l3 of repeater();
-	instance repa2l4 of repeater();
-	instance repa3l3 of repeater();
-	instance repa3l4 of repeater();
-	instance repa4l4 of repeater();
 	connect
-		repa1l2.output -> repa1l3.input,
-		repa1l3.output -> repa1l4.input,
 		a2 -> repa2l1.input,
 		repa2l1.output -> repa2l2.input,
-		repa2l2.output -> repa2l3.input,
-		repa2l3.output -> repa2l4.input,
-		repa3l3.output -> repa3l4.input,
 
 		0_inst.a1l1 -> repa1l2.input,
 		a2 -> 0_inst.a2l0,
-		1_inst.a3l2 -> repa3l3.input,
 		0_inst.a1l1 -> 1_inst.a1l1,
-		2_inst.a4l3 -> repa4l4.input,
-		repa1l2.output -> 2_inst.a1l2,
-		1_inst.a3l2 -> 2_inst.a3l2,
-		2_inst.a4l3 -> 3_inst.a4l3,
-		repa3l4.output -> a3,
-		3_inst.a0l4 -> a0;
+		1_inst.a0l2 -> a0;
 }

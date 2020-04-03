@@ -47,11 +47,11 @@ namespace BohSME
 		public tdata a1l1;
 
 		int minLen ;
-		private readonly int[] acc = new int[len/2];
+		private readonly int[] acc = new int[halfLen/2];
 		int lenReduc ;
 		int minLen2 ;
 		int i ;
-		int j ;
+		int i ;
 		protected override void OnTick()
 		{
 			if (a1l1.valid){

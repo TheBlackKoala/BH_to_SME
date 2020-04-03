@@ -35,24 +35,44 @@ namespace BohSME
         int Dat{get;set;}
     }
 
-    [ClockedProcess]
-    public class Creater : SimpleProcess
+    public class Creater : SimulationProcess
     {
         [OutputBus]
         public tdata a1;
 
         private int a = 0;
 
-        protected override void OnTick()
+        public override async Task Run()
         {
-            for(int i =0; i<len; i++){
-                a1.val[i]=a+i;
+            for(int j = 0; j<20; j++){
+                await ClockAsync();
+                for(int i =0; i<len; i++){
+                    a1.val[i]=a+i;
+                }
+                a1.valid=true;
+                a1.len=len;
+                a=a+len;
             }
-            a1.valid=true;
-            a1.len=len;
-            a=a+len;
         }
     }
+
+    // public class Creater : SimpleProcess
+    // {
+    //     [OutputBus]
+    //     public tdata a1;
+
+    //     private int a = 0;
+
+    //     protected override void OnTick()
+    //     {
+    //         for(int i =0; i<len; i++){
+    //             a1.val[i]=a+i;
+    //         }
+    //         a1.valid=true;
+    //         a1.len=len;
+    //         a=a+len;
+    //     }
+    // }
 
     public class  Printer : SimulationProcess
     {

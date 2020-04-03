@@ -382,6 +382,13 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     if (view.isConstant()) {
       instr.constant.pprint(ss, false);
     }
+    else if(view.stride.size()==1 && view.stride[0]==0){
+      auto valtype = view.base->dtype();
+      cout << bh_type_size(valtype) << "\n";
+      auto val = view.base->getDataPtr();
+      auto valt = (double*) val;
+      cout << *valt << "\n";
+    }
     else{
       getNameSub(scope,view,ss,chanSub);
       chans->push_back(ss.str());
@@ -613,7 +620,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       ss << "\t" << "var lenReduc : uint;" << "\n"
          << "\t" << "var minLen2 : uint;" << "\n"
          << "\t" << "var i : uint;" << "\n"
-         << "\t" << "var i : uint;" << "\n";
+         << "\t" << "var j : uint;" << "\n";
     }
 
     //The process body
@@ -625,6 +632,7 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       for (uint i=1; i<chan.size(); i++){
         ss << chan[i] << "l" << level-1 << ".valid && ";
       }
+      //Remove the last " && "
       ss.seekp(-4,ss.cur);
       ss << "){" << "\n";
 
