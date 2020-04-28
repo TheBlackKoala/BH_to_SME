@@ -33,16 +33,19 @@ namespace BohSME
             for(int j = 0; j<20; j++){
                 await ClockAsync();
                 for(int i =0; i<len; i++){
-                    val = rnd.Next(256);
+                    int val = rnd.Next(256);
                     if(val>=200)
                         c++;
                     a1.val[i]=val;
                 }
                 a1.valid=true;
                 a1.len=len;
+                Console.WriteLine("Total number of values above 200 in iteration {0} : {1}",j,c);
             }
-            for (int j = 0; j<3; j++){await ClockAsync();}
-            Console.WriteLine("Total number of values above 240: {0}", c);
+            await ClockAsync();
+            a1.valid=false;
+            for (int j = 0; j<10; j++){await ClockAsync();}
+            Console.WriteLine("Total number of values above 200: {0}", c);
         }
     }
 
@@ -54,7 +57,7 @@ namespace BohSME
         public override async Task Run()
         {
             int a = 0;
-            for(int i=0; i<20; i++){
+            for(int i=0; i<25; i++){
                 await ClockAsync();
                 Console.WriteLine("I: {0}", i);
                 if(a3.valid){

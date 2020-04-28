@@ -5,6 +5,7 @@ namespace BohSME
 {
 	public static class ValuesConfig{
 		public const int len = 32;
+		public const int halfLen = len/2;
 		public const int reduceLen = 5;
 	}
 	[ClockedBus]

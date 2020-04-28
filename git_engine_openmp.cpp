@@ -371,6 +371,78 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
     out << name;
   }
 
+  //Get the first value of a bohrium array - useful for arrays with 0 in stride
+  string getSingleValue(const bh_view &view){
+    stringstream ss;
+    auto viewtype = view.base->dtype();
+    auto val = view.base->getDataPtr();
+    switch(bh_type_size(viewtype)){
+    case 1:
+      if(bh_type_is_signed_integer(viewtype)){
+        auto valt = (int8_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_unsigned_integer(viewtype)){
+        auto valt = (uint8_t*) val;
+        ss << *valt;
+        break;
+      }
+      else{//Boolean
+        auto valt = (unsigned char*) val;
+        ss << *valt;
+        break;
+      }
+      break;
+    case 2:
+      if(bh_type_is_signed_integer(viewtype)){
+        auto valt = (int16_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_unsigned_integer(viewtype)){
+        auto valt = (uint16_t*) val;
+        ss << *valt;
+        break;
+      }
+    case 4:
+      if(bh_type_is_signed_integer(viewtype)){
+        auto valt = (int32_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_unsigned_integer(viewtype)){
+        auto valt = (uint32_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_unsigned_integer(viewtype)){
+        auto valt = (float*) val;
+        ss << *valt;
+        break;
+      }
+    case 8:
+      if(bh_type_is_signed_integer(viewtype)){
+        auto valt = (int64_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_unsigned_integer(viewtype)){
+        auto valt = (uint64_t*) val;
+        ss << *valt;
+        break;
+      }
+      else if(bh_type_is_float(viewtype)){
+        auto valt = (double*) val;
+        ss << *valt;
+        break;
+      }
+    default:
+      cout << "This type signature is not supported for constant values on FPGA";
+    }
+    return ss.str();
+  }
+
   pair<string,bool> smeGetName(const bh_instruction &instr,
                                const Scope &scope,
                                const bh_view &view,
@@ -383,11 +455,8 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
       instr.constant.pprint(ss, false);
     }
     else if(view.stride.size()==1 && view.stride[0]==0){
-      auto valtype = view.base->dtype();
-      cout << bh_type_size(valtype) << "\n";
-      auto val = view.base->getDataPtr();
-      auto valt = (double*) val;
-      cout << *valt << "\n";
+      ss << getSingleValue(view);
+
     }
     else{
       getNameSub(scope,view,ss,chanSub);
@@ -477,9 +546,16 @@ void EngineOpenMP::writeHeader(const jitk::SymbolTable &symbols,
 
   void write_reduce(const bh_instruction &instr, const vector <string> &ops, stringstream &out) {
     stringstream op;
+    stringstream ne;
     switch(instr.opcode) {
-    case BH_ADD_REDUCE: op << " + "; break;
-    case BH_MULTIPLY_REDUCE: op << " * "; break;
+    case BH_ADD_REDUCE:
+      op << " + ";
+      ne << " 0 ";
+      break;
+    case BH_MULTIPLY_REDUCE:
+      op << " * ";
+      ne << " 1 ";
+      break;
     case BH_MINIMUM_REDUCE: ; break;
     case BH_MAXIMUM_REDUCE: ; break;
     case BH_LOGICAL_AND_REDUCE: ; break;

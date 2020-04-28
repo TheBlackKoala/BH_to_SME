@@ -36,21 +36,25 @@ namespace BohSME
     }
 
     [ClockedProcess]
-    public class Creater : SimpleProcess
+    public class Creater : SimulationProcess
     {
         [OutputBus]
         public tdata a1;
 
         private int a = 0;
 
-        protected override void OnTick()
+        public override async Task Run()
         {
-            for(int i =0; i<len; i++){
-                a1.val[i]=a+i;
+            for(int j=0;;j++){
+                await ClockAsync();
+                for(int i =0; i<len-j; i++){
+                    a1.val[i]=a+i;
+                }
+                a1.valid=true;
+                a1.len=len-j;
+                a=a+len-j;
+                Console.WriteLine("Vals: {0}", a);
             }
-            a1.valid=true;
-            a1.len=len;
-            a=a+len;
         }
     }
 
@@ -72,6 +76,26 @@ namespace BohSME
                     a += a3.len;
                     if(a>=ValuesConfig.len*3){
                         break;
+                    }
+                }
+            }
+            Simulation.Current.RequestStop();
+        }
+    }
+
+    public class Sink : SimpleProcess
+    {
+        [InputBus]
+        public tdata input;
+
+        private int a = 0;
+
+        protected override void OnTick()
+        {
+            if(input.valid){
+                for(int i =0; i<len; i++){
+                    if(i<input.len){
+                        a= a+input.val[i];
                     }
                 }
             }

@@ -12,16 +12,17 @@ if not os.path.exists(outputdir):
 
 outputfiles = [projectname+".csproj","BusDefinitions.cs","Processes.cs", "Program.cs"]
 
-outps = [open(outputdir+"/"+f,"w+") for f in outputfiles]
+outps = [open(outputdir+"/"+f,"w+") for f in outputfiles[1:]]
 
-#Write the csproj file
-outps[0].write("<Project Sdk=\"Microsoft.NET.Sdk\">\n  <ItemGroup>\n    <PackageReference Include=\"SME\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.Tracer\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.VHDL\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.GraphViz\" Version=\"0.4.0-beta\" />\n    \n    <PackageReference Include=\"System.Drawing.Common\" Version=\"4.5.1\" />\n    <PackageReference Include=\"runtime.linux-x64.CoreCompat.System.Drawing\" Version=\"1.0.0-beta002\" />\n  </ItemGroup>\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>netcoreapp3.1</TargetFramework>\n    <RootNamespace>"\
-               + projectname+\
-               "</RootNamespace>\n  </PropertyGroup>\n\n</Project>\n")
+#Write the csproj file if it isn't there already
+if not os.path.exists(outputdir+"/"+outputfiles[0]):
+    f = open(outputdir+"/"+outputfiles[0],"w+")
+    f.write("<Project Sdk=\"Microsoft.NET.Sdk\">\n  <ItemGroup>\n    <PackageReference Include=\"SME\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.Tracer\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.VHDL\" Version=\"0.4.0-beta\" />\n    <PackageReference Include=\"SME.GraphViz\" Version=\"0.4.0-beta\" />\n    \n    <PackageReference Include=\"System.Drawing.Common\" Version=\"4.5.1\" />\n    <PackageReference Include=\"runtime.linux-x64.CoreCompat.System.Drawing\" Version=\"1.0.0-beta002\" />\n  </ItemGroup>\n\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>netcoreapp3.1</TargetFramework>\n    <RootNamespace>"\
+                   + projectname+\
+                "</RootNamespace>\n  </PropertyGroup>\n\n</Project>\n")
+    #the csproj has been written
+    f.close()
 
-#the csproj has been written
-outps[0].close()
-outps = outps[1:]
 
 def writeStart(f):
     f.write("using SME;\n")
@@ -77,6 +78,7 @@ def parse(inp):
                 elif "const len:" in line:
                     outps[index].write("\tpublic static class ValuesConfig{\n")
                     outps[index].write("\t\tpublic const int len = 32;\n")
+                    outps[index].write("\t\tpublic const int halfLen = len/2;\n")
                     outps[index].write("\t\tpublic const int reduceLen = 5;\n")
                     outps[index].write("\t}\n")
 
@@ -223,7 +225,9 @@ def parse(inp):
                         outps[index].write("\t\t\tvar " + name + " = Scope.CreateBus<tdata>();\n")
                         createds.append(name)
                     if(name != outbus):
-                        outps[index].write("\t\t\t" + outbus + " = " + name + ";\n")
+                        if not outbus in createds:
+                            outps[index].write("\t\t\t" + outbus + " = " + name + ";\n")
+                            createds.append(outbus)
                     outps[index].write("\t\t\t" + inbus  + " = " + name + ";\n")
 
         line = inp.readline()
