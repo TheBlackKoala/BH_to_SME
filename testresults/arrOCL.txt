@@ -1,0 +1,361 @@
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_902a_652d5/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      169052ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.17746s
+Total Execution:                 0.0473122s
+  Pre-fusion:                    0.000108819s
+  Fusion:                        0.000223722s
+  Codegen:                       0.000172126s
+  Compilation:                   0.0456459s
+  Exec:                          0.000117899s
+  Copy2dev:                      0.000107312s
+  Copy2host:                     0.00011411s
+  Offload:                       0s
+  Other:                         0.000822374s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.130147s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.18e-04s   1.18e-04s   1.18e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_9038_5be54/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      203460ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.147449s
+Total Execution:                 0.0288991s
+  Pre-fusion:                    0.000125301s
+  Fusion:                        0.000251591s
+  Codegen:                       0.000176291s
+  Compilation:                   0.0272107s
+  Exec:                          0.000118939s
+  Copy2dev:                      0.000104554s
+  Copy2host:                     9.1581e-05s
+  Offload:                       0s
+  Other:                         0.000820165s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.11855s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.19e-04s   1.19e-04s   1.19e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_9045_903c7/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      183586ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.163412s
+Total Execution:                 0.0237188s
+  Pre-fusion:                    0.000110952s
+  Fusion:                        0.000228055s
+  Codegen:                       0.000170796s
+  Compilation:                   0.0220792s
+  Exec:                          0.000129031s
+  Copy2dev:                      0.000122309s
+  Copy2host:                     0.000109019s
+  Offload:                       0s
+  Other:                         0.000769439s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.139693s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.29e-04s   1.29e-04s   1.29e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_9052_f88ed/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      203886ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.147141s
+Total Execution:                 0.0236468s
+  Pre-fusion:                    0.000112443s
+  Fusion:                        0.000220547s
+  Codegen:                       0.000175863s
+  Compilation:                   0.0220782s
+  Exec:                          0.000128698s
+  Copy2dev:                      0.000105228s
+  Copy2host:                     0.000107608s
+  Offload:                       0s
+  Other:                         0.000718269s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.123494s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.29e-04s   1.29e-04s   1.29e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_905f_38457/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      212704ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.141041s
+Total Execution:                 0.0237511s
+  Pre-fusion:                    0.00010784s
+  Fusion:                        0.000221863s
+  Codegen:                       0.000165212s
+  Compilation:                   0.0221799s
+  Exec:                          0.000122944s
+  Copy2dev:                      0.000102798s
+  Copy2host:                     9.8044e-05s
+  Offload:                       0s
+  Other:                         0.000752441s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.11729s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.23e-04s   1.23e-04s   1.23e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_906f_edbbe/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      220567ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.136013s
+Total Execution:                 0.0237653s
+  Pre-fusion:                    0.000111033s
+  Fusion:                        0.000229792s
+  Codegen:                       0.000169736s
+  Compilation:                   0.022175s
+  Exec:                          0.000132344s
+  Copy2dev:                      0.000101593s
+  Copy2host:                     0.000109676s
+  Offload:                       0s
+  Other:                         0.000736132s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.112248s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.32e-04s   1.32e-04s   1.32e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_907b_1d5ca/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      187466ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.160029s
+Total Execution:                 0.0238505s
+  Pre-fusion:                    0.000109084s
+  Fusion:                        0.000224164s
+  Codegen:                       0.000176893s
+  Compilation:                   0.0222047s
+  Exec:                          0.000114079s
+  Copy2dev:                      0.000102239s
+  Copy2host:                     0.000134844s
+  Offload:                       0s
+  Other:                         0.000784562s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.136178s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.14e-04s   1.14e-04s   1.14e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_9089_a9144/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      219827ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.136471s
+Total Execution:                 0.0233433s
+  Pre-fusion:                    0.000110569s
+  Fusion:                        0.000223748s
+  Codegen:                       0.000162911s
+  Compilation:                   0.021764s
+  Exec:                          0.000134286s
+  Copy2dev:                      0.000103981s
+  Copy2host:                     0.000108912s
+  Offload:                       0s
+  Other:                         0.000734909s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.113128s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.34e-04s   1.34e-04s   1.34e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_9096_c124c/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      207930ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.144279s
+Total Execution:                 0.0240576s
+  Pre-fusion:                    0.000111236s
+  Fusion:                        0.000218927s
+  Codegen:                       0.000149488s
+  Compilation:                   0.0224706s
+  Exec:                          0.000129788s
+  Copy2dev:                      0.000111809s
+  Copy2host:                     9.6065e-05s
+  Offload:                       0s
+  Other:                         0.000769642s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.120222s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.30e-04s   1.30e-04s   1.30e-04s   
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_90a3_d71d1/src/c7f5da8a65501b4e_280794b21c55905e.cl"
+[    2     6    10 ... 39990 39994 39998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      193382ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.155133s
+Total Execution:                 0.0235549s
+  Pre-fusion:                    0.000109355s
+  Fusion:                        0.00022028s
+  Codegen:                       0.000173915s
+  Compilation:                   0.0219299s
+  Exec:                          0.000142146s
+  Copy2dev:                      0.000104265s
+  Copy2host:                     0.000103688s
+  Offload:                       0s
+  Other:                         0.000771274s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.131578s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_280794b21c55905e.cl            1    1.42e-04s   1.42e-04s   1.42e-04s   
+

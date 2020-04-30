@@ -12,20 +12,6 @@ else echo "Version of libffi was $version"
      sudo pacman -U --noconfirm /var/cache/pacman/pkg/libffi-3.2.1-4-x86_64.pkg.tar.xz
 fi
 
-BH_STACK=openmp dython -m bohrium --info
-
-BH_STACK=opencl dython -m bohrium --info
-
-export BH_STACK=openmp
-export BH_OPENMP_PROF=true
-
-./boh.py
-
-export BH_STACK=opencl
-export BH_OPENCL_PROF=true
-
-./boh.py
-
-
+./"$1"
 
 yay -S boost libffi --noconfirm

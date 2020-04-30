@@ -1,0 +1,421 @@
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a2,}, temps: {a2,}, block list:
+    BH_ADD a2[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a3[0:10000:1] a2[0:10000:1] 2
+    BH_ADD a1[0:10000:1] a2[0:10000:1] a3[0:10000:1]
+
+Write source "/tmp/bh_8f4f_ac956/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8f4f_ac956/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8f4f_ac956/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      221271ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.135581s
+Total Execution:                 0.0832196s
+  Pre-fusion:                    0.00015093s
+  Fusion:                        0.000274593s
+  Codegen:                       0.000620234s
+  Compilation:                   0.0814612s
+  Exec:                          0.000159539s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000553096s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.052361s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.60e-04s   1.60e-04s   1.60e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_8f72_62f61/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8f72_62f61/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8f72_62f61/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      257934ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.116309s
+Total Execution:                 0.0652318s
+  Pre-fusion:                    0.000112818s
+  Fusion:                        0.000209187s
+  Codegen:                       0.000535874s
+  Compilation:                   0.0637328s
+  Exec:                          0.000194707s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000446372s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0510772s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.95e-04s   1.95e-04s   1.95e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_8f88_7dc33/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8f88_7dc33/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8f88_7dc33/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      238800ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.125628s
+Total Execution:                 0.0791822s
+  Pre-fusion:                    0.00011841s
+  Fusion:                        0.000212438s
+  Codegen:                       0.000522552s
+  Compilation:                   0.0650221s
+  Exec:                          0.0128286s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000478068s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0464461s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.28e-02s   1.28e-02s   1.28e-02s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a3[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a2[0:10000:1] a1[0:10000:1] a3[0:10000:1]
+
+Write source "/tmp/bh_8f9e_60635/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8f9e_60635/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8f9e_60635/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      256758ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.116841s
+Total Execution:                 0.0654458s
+  Pre-fusion:                    0.000121152s
+  Fusion:                        0.000225567s
+  Codegen:                       0.000540937s
+  Compilation:                   0.063915s
+  Exec:                          0.000173663s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000469511s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0513957s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.74e-04s   1.74e-04s   1.74e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a2,}, temps: {a2,}, block list:
+    BH_ADD a2[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a1[0:10000:1] a2[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a2[0:10000:1] a1[0:10000:1]
+
+Write source "/tmp/bh_8fb2_4e8ed/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8fb2_4e8ed/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8fb2_4e8ed/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      265708ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.112906s
+Total Execution:                 0.065639s
+  Pre-fusion:                    0.00011642s
+  Fusion:                        0.000236517s
+  Codegen:                       0.000516548s
+  Compilation:                   0.0641094s
+  Exec:                          0.000163793s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000496316s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0472667s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.64e-04s   1.64e-04s   1.64e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a2,}, temps: {a2,}, block list:
+    BH_ADD a2[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a3[0:10000:1] a2[0:10000:1] 2
+    BH_ADD a1[0:10000:1] a2[0:10000:1] a3[0:10000:1]
+
+Write source "/tmp/bh_8fc6_86dd4/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8fc6_86dd4/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8fc6_86dd4/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      242740ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.123589s
+Total Execution:                 0.0687932s
+  Pre-fusion:                    0.000127858s
+  Fusion:                        0.00020412s
+  Codegen:                       0.000658378s
+  Compilation:                   0.0671594s
+  Exec:                          0.000172085s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000471318s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0547961s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.72e-04s   1.72e-04s   1.72e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_8fda_9b81c/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8fda_9b81c/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8fda_9b81c/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      259252ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.115718s
+Total Execution:                 0.0689834s
+  Pre-fusion:                    0.00013003s
+  Fusion:                        0.000255967s
+  Codegen:                       0.000486737s
+  Compilation:                   0.0674103s
+  Exec:                          0.000169269s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000531063s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0467341s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.69e-04s   1.69e-04s   1.69e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_8fee_4eb49/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_8fee_4eb49/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_8fee_4eb49/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      251365ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.119348s
+Total Execution:                 0.06831s
+  Pre-fusion:                    0.000117769s
+  Fusion:                        0.000216469s
+  Codegen:                       0.000572932s
+  Compilation:                   0.0667521s
+  Exec:                          0.000167593s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000483145s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0510383s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.68e-04s   1.68e-04s   1.68e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_9002_4769b/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_9002_4769b/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_9002_4769b/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      254932ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.117678s
+Total Execution:                 0.0670244s
+  Pre-fusion:                    0.000227521s
+  Fusion:                        0.000209837s
+  Codegen:                       0.000519764s
+  Compilation:                   0.0654078s
+  Exec:                          0.000197507s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000462003s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.050654s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.98e-04s   1.98e-04s   1.98e-04s   
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_9016_94348/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_9016_94348/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_9016_94348/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      30000 operations
+Throughput:                      257350ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.116573s
+Total Execution:                 0.064446s
+  Pre-fusion:                    0.000114739s
+  Fusion:                        0.00020833s
+  Codegen:                       0.000528306s
+  Compilation:                   0.0629827s
+  Exec:                          0.000166806s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000445204s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0521269s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.67e-04s   1.67e-04s   1.67e-04s   
+
