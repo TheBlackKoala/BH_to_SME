@@ -14,7 +14,7 @@ function run()
     while [ $i -le 10 ]
     do
         ./"$name"test.py >> $path/"$name"OMP.txt
-        i=$(( i+1 ))
+        i=`expr $i + 1`
     done
 
     export BH_OPENCL_VERBOSE=true

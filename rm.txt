@@ -1,0 +1,37 @@
+[    2     6    10 ... 39990 39994 39998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+[    2     6    10 ... 39990 39994 39998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+[    2     6    10 ... 39990 39994 39998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a2,}, temps: {a2,}, block list:
+    BH_ADD a2[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a3[0:10000:1] a2[0:10000:1] 2
+    BH_ADD a1[0:10000:1] a2[0:10000:1] a3[0:10000:1]
+
+[    2     6    10 ... 39990 39994 39998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
+    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
+    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+
+Write source "/tmp/bh_11625_41846/src/b32891bf33e47a74_deab0274e3d4b37e.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_11625_41846/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_11625_41846/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[    2     6    10 ... 39990 39994 39998]

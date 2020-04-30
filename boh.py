@@ -1,4 +1,4 @@
-#!/usr/bin/dython
+#!/usr/bin/dython2
 #BH_OPENMP_VERBOSE=true
 import bohrium as bh
 # n= 2
