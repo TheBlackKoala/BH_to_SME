@@ -1,13 +1,13 @@
 
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_11492_cd8db/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_11492_cd8db/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_11492_cd8db/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
-[    2     6    10 ... 39990 39994 39998]
+Write source "/tmp/bh_331_6c76f/src/b32891bf33e47a74_76449a3422bac0fd.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_331_6c76f/src/b32891bf33e47a74_76449a3422bac0fd.c -o /tmp/bh_331_6c76f/obj/b32891bf33e47a74_76449a3422bac0fd.so"
+[      2       6      10 ... 3599990 3599994 3599998]
 [OpenMP] Profiling: 
 Fuse cache hits:                 2/4 (50%)
 Codegen cache hits:              0/1 (0%)
@@ -16,204 +16,352 @@ Array contractions:              1/4 (25%)
 Outer-fusion ratio:              1/5 (20%)
 Malloc cache hits:               0/3 (0%)
 
-Max memory usage:                0 MB
+Max memory usage:                20 MB
 Syncs to NumPy:                  2
-Total Work:                      30000 operations
-Throughput:                      267365ops
+Total Work:                      2700000 operations
+Throughput:                      9.13224e+06ops
 Work below par-threshold (1000): 0%
 
-Wall clock:                      0.112206s
-Total Execution:                 0.0669067s
-  Pre-fusion:                    0.000111414s
-  Fusion:                        0.000239443s
-  Codegen:                       0.000490777s
-  Compilation:                   0.0654133s
-  Exec:                          0.000163717s
+Wall clock:                      0.295656s
+Total Execution:                 0.238268s
+  Pre-fusion:                    0.000154763s
+  Fusion:                        0.00118564s
+  Codegen:                       0.00172481s
+  Compilation:                   0.232752s
+  Exec:                          0.00180796s
   Copy2dev:                      0s
   Copy2host:                     0s
   Offload:                       0s
-  Other:                         0.000488088s
+  Other:                         0.000642078s
 Ext-method:                      0s
 
-Unaccounted for (wall - total):  0.0452995s
+Unaccounted for (wall - total):  0.0573883s
 
 Per-kernel Profiling:
   Kernel filename                        Calls         Total time  Max time    Min time    
-  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.64e-04s   1.64e-04s   1.64e-04s   
+  b32891bf33e47a74_76449a3422bac0fd.c             1    1.81e-03s   1.81e-03s   1.81e-03s   
 
+[      2       6      10 ... 3599990 3599994 3599998]
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_114a9_7e2a1/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_114a9_7e2a1/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_114a9_7e2a1/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
-[    2     6    10 ... 39990 39994 39998]
 [OpenMP] Profiling: 
 Fuse cache hits:                 2/4 (50%)
 Codegen cache hits:              0/1 (0%)
-Compilation cache hits:          0/1 (0%)
+Compilation cache hits:          1/1 (100%)
 Array contractions:              1/4 (25%)
 Outer-fusion ratio:              1/5 (20%)
 Malloc cache hits:               0/3 (0%)
 
-Max memory usage:                0 MB
+Max memory usage:                20 MB
 Syncs to NumPy:                  2
-Total Work:                      30000 operations
-Throughput:                      257429ops
+Total Work:                      2700000 operations
+Throughput:                      4.78173e+07ops
 Work below par-threshold (1000): 0%
 
-Wall clock:                      0.116537s
-Total Execution:                 0.0683643s
-  Pre-fusion:                    0.000139008s
-  Fusion:                        0.000271246s
-  Codegen:                       0.000518068s
-  Compilation:                   0.0668018s
-  Exec:                          0.000158859s
+Wall clock:                      0.0564649s
+Total Execution:                 0.00323566s
+  Pre-fusion:                    0.000120264s
+  Fusion:                        0.000227174s
+  Codegen:                       0.000490384s
+  Compilation:                   0.000198831s
+  Exec:                          0.00171958s
   Copy2dev:                      0s
   Copy2host:                     0s
   Offload:                       0s
-  Other:                         0.000475338s
+  Other:                         0.000479432s
 Ext-method:                      0s
 
-Unaccounted for (wall - total):  0.0481728s
+Unaccounted for (wall - total):  0.0532293s
 
-Per-kernel Profiling:
-  Kernel filename                        Calls         Total time  Max time    Min time    
-  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.59e-04s   1.59e-04s   1.59e-04s   
-
+[      2       6      10 ... 3599990 3599994 3599998]
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_114c8_c0c71/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_114c8_c0c71/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_114c8_c0c71/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
-[    2     6    10 ... 39990 39994 39998]
 [OpenMP] Profiling: 
 Fuse cache hits:                 2/4 (50%)
 Codegen cache hits:              0/1 (0%)
-Compilation cache hits:          0/1 (0%)
+Compilation cache hits:          1/1 (100%)
 Array contractions:              1/4 (25%)
 Outer-fusion ratio:              1/5 (20%)
 Malloc cache hits:               0/3 (0%)
 
-Max memory usage:                0 MB
+Max memory usage:                20 MB
 Syncs to NumPy:                  2
-Total Work:                      30000 operations
-Throughput:                      213800ops
+Total Work:                      2700000 operations
+Throughput:                      5.08674e+07ops
 Work below par-threshold (1000): 0%
 
-Wall clock:                      0.140318s
-Total Execution:                 0.0911576s
-  Pre-fusion:                    0.000127108s
-  Fusion:                        0.000255492s
-  Codegen:                       0.000576755s
-  Compilation:                   0.0895153s
-  Exec:                          0.000187508s
+Wall clock:                      0.0530792s
+Total Execution:                 0.00321186s
+  Pre-fusion:                    0.000124188s
+  Fusion:                        0.000245933s
+  Codegen:                       0.000485757s
+  Compilation:                   0.00020286s
+  Exec:                          0.00169398s
   Copy2dev:                      0s
   Copy2host:                     0s
   Offload:                       0s
-  Other:                         0.000495492s
+  Other:                         0.000459148s
 Ext-method:                      0s
 
-Unaccounted for (wall - total):  0.0491601s
+Unaccounted for (wall - total):  0.0498673s
 
-Per-kernel Profiling:
-  Kernel filename                        Calls         Total time  Max time    Min time    
-  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.88e-04s   1.88e-04s   1.88e-04s   
-
+[      2       6      10 ... 3599990 3599994 3599998]
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_114e6_1d13d/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_114e6_1d13d/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_114e6_1d13d/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
-[    2     6    10 ... 39990 39994 39998]
 [OpenMP] Profiling: 
 Fuse cache hits:                 2/4 (50%)
 Codegen cache hits:              0/1 (0%)
-Compilation cache hits:          0/1 (0%)
+Compilation cache hits:          1/1 (100%)
 Array contractions:              1/4 (25%)
 Outer-fusion ratio:              1/5 (20%)
 Malloc cache hits:               0/3 (0%)
 
-Max memory usage:                0 MB
+Max memory usage:                20 MB
 Syncs to NumPy:                  2
-Total Work:                      30000 operations
-Throughput:                      204625ops
+Total Work:                      2700000 operations
+Throughput:                      4.85137e+07ops
 Work below par-threshold (1000): 0%
 
-Wall clock:                      0.14661s
-Total Execution:                 0.0790177s
-  Pre-fusion:                    0.00132591s
-  Fusion:                        0.000332367s
-  Codegen:                       0.000689645s
-  Compilation:                   0.0753896s
-  Exec:                          0.000155691s
+Wall clock:                      0.0556544s
+Total Execution:                 0.00304807s
+  Pre-fusion:                    0.000110082s
+  Fusion:                        0.000202326s
+  Codegen:                       0.000436547s
+  Compilation:                   0.000174576s
+  Exec:                          0.00168161s
   Copy2dev:                      0s
   Copy2host:                     0s
   Offload:                       0s
-  Other:                         0.00112443s
+  Other:                         0.000442923s
 Ext-method:                      0s
 
-Unaccounted for (wall - total):  0.067592s
+Unaccounted for (wall - total):  0.0526063s
 
-Per-kernel Profiling:
-  Kernel filename                        Calls         Total time  Max time    Min time    
-  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.56e-04s   1.56e-04s   1.56e-04s   
-
+[      2       6      10 ... 3599990 3599994 3599998]
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_11503_2858b/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_11503_2858b/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_11503_2858b/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
-[    2     6    10 ... 39990 39994 39998]
 [OpenMP] Profiling: 
 Fuse cache hits:                 2/4 (50%)
 Codegen cache hits:              0/1 (0%)
-Compilation cache hits:          0/1 (0%)
+Compilation cache hits:          1/1 (100%)
 Array contractions:              1/4 (25%)
 Outer-fusion ratio:              1/5 (20%)
 Malloc cache hits:               0/3 (0%)
 
-Max memory usage:                0 MB
+Max memory usage:                20 MB
 Syncs to NumPy:                  2
-Total Work:                      30000 operations
-Throughput:                      232470ops
+Total Work:                      2700000 operations
+Throughput:                      4.84104e+07ops
 Work below par-threshold (1000): 0%
 
-Wall clock:                      0.129049s
-Total Execution:                 0.0834937s
-  Pre-fusion:                    0.000115305s
-  Fusion:                        0.00022174s
-  Codegen:                       0.000528567s
-  Compilation:                   0.0693153s
-  Exec:                          0.0128592s
+Wall clock:                      0.0557732s
+Total Execution:                 0.00312303s
+  Pre-fusion:                    0.000114853s
+  Fusion:                        0.000222549s
+  Codegen:                       0.000434696s
+  Compilation:                   0.00017844s
+  Exec:                          0.00171198s
   Copy2dev:                      0s
   Copy2host:                     0s
   Offload:                       0s
-  Other:                         0.000453561s
+  Other:                         0.000460509s
 Ext-method:                      0s
 
-Unaccounted for (wall - total):  0.0455554s
+Unaccounted for (wall - total):  0.0526501s
 
-Per-kernel Profiling:
-  Kernel filename                        Calls         Total time  Max time    Min time    
-  b32891bf33e47a74_deab0274e3d4b37e.c             1    1.29e-02s   1.29e-02s   1.29e-02s   
-
+[      2       6      10 ... 3599990 3599994 3599998]
 rank: -1, size: 1, reshapable, block list:
-rank: 0, size: 10000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
-    BH_ADD a1[0:10000:1] a4[0:10000:1] a4[0:10000:1]
-    BH_ADD a2[0:10000:1] a1[0:10000:1] 2
-    BH_ADD a3[0:10000:1] a1[0:10000:1] a2[0:10000:1]
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
 
-Write source "/tmp/bh_11528_f8d54/src/b32891bf33e47a74_deab0274e3d4b37e.c"
-compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_11528_f8d54/src/b32891bf33e47a74_deab0274e3d4b37e.c -o /tmp/bh_11528_f8d54/obj/b32891bf33e47a74_deab0274e3d4b37e.so"
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                20 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      4.16976e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0647519s
+Total Execution:                 0.00308773s
+  Pre-fusion:                    0.000112282s
+  Fusion:                        0.000213522s
+  Codegen:                       0.000429547s
+  Compilation:                   0.000178761s
+  Exec:                          0.00171085s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000442767s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0616642s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                20 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      5.13598e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0525703s
+Total Execution:                 0.00303757s
+  Pre-fusion:                    0.000111259s
+  Fusion:                        0.000206134s
+  Codegen:                       0.000437272s
+  Compilation:                   0.000173321s
+  Exec:                          0.0016597s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000449885s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0495327s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                20 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      5.08773e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0530689s
+Total Execution:                 0.0030808s
+  Pre-fusion:                    0.000114952s
+  Fusion:                        0.000221344s
+  Codegen:                       0.000450953s
+  Compilation:                   0.000181121s
+  Exec:                          0.00167759s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000434843s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0499881s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                20 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      5.11501e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0527858s
+Total Execution:                 0.00306705s
+  Pre-fusion:                    0.000112362s
+  Fusion:                        0.000213407s
+  Codegen:                       0.000446818s
+  Compilation:                   0.000176986s
+  Exec:                          0.00168472s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000432756s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0497187s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+rank: -1, size: 1, reshapable, block list:
+rank: 0, size: 900000, reshapable, news: {a1,a2,a3,}, frees: {a4,a1,}, temps: {a1,}, block list:
+    BH_ADD a1[0:900000:1] a4[0:900000:1] a4[0:900000:1]
+    BH_ADD a2[0:900000:1] a1[0:900000:1] 2
+    BH_ADD a3[0:900000:1] a1[0:900000:1] a2[0:900000:1]
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                20 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      5.128e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0526521s
+Total Execution:                 0.00315789s
+  Pre-fusion:                    0.000111506s
+  Fusion:                        0.000235811s
+  Codegen:                       0.000476263s
+  Compilation:                   0.000173379s
+  Exec:                          0.0016993s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000461623s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0494942s
+

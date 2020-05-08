@@ -1,0 +1,359 @@
+
+Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
+Write source "/tmp/bh_602_1759b/src/c7f5da8a65501b4e_a7dbfdeba6cb3d57.cl"
+Write source "/tmp/bh_602_1759b/src/c7f5da8a65501b4e_12c7035c0ad44a02.cl"
+196691
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          0/2 (0%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      1.64303e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.221299s
+Total Execution:                 0.101623s
+  Pre-fusion:                    0.000212939s
+  Fusion:                        0.000526649s
+  Codegen:                       0.000192807s
+  Compilation:                   0.0923179s
+  Exec:                          0.00466934s
+  Copy2dev:                      5.9124e-05s
+  Copy2host:                     0.000212872s
+  Offload:                       0.00143815s
+  Other:                         0.00199356s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.119675s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_a7dbfdeba6cb3d57.cl            1    3.92e-03s   3.92e-03s   3.92e-03s   
+  c7f5da8a65501b4e_12c7035c0ad44a02.cl            1    7.46e-04s   7.46e-04s   7.46e-04s   
+
+196537
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.60626e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.13951s
+Total Execution:                 0.012405s
+  Pre-fusion:                    0.000234s
+  Fusion:                        0.000535391s
+  Codegen:                       0.000214111s
+  Compilation:                   0.00339131s
+  Exec:                          0.00445345s
+  Copy2dev:                      5.0743e-05s
+  Copy2host:                     0.000236526s
+  Offload:                       0.00140642s
+  Other:                         0.00188304s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.127105s
+
+196957
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.6532e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.137042s
+Total Execution:                 0.0124606s
+  Pre-fusion:                    0.000210494s
+  Fusion:                        0.000521862s
+  Codegen:                       0.000194419s
+  Compilation:                   0.00343018s
+  Exec:                          0.00448936s
+  Copy2dev:                      5.2073e-05s
+  Copy2host:                     0.000247778s
+  Offload:                       0.00146551s
+  Other:                         0.00184894s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.124582s
+
+197156
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.62052e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.138751s
+Total Execution:                 0.0124136s
+  Pre-fusion:                    0.000214858s
+  Fusion:                        0.000521125s
+  Codegen:                       0.000202459s
+  Compilation:                   0.00339644s
+  Exec:                          0.00447905s
+  Copy2dev:                      5.1161e-05s
+  Copy2host:                     0.000227871s
+  Offload:                       0.00143113s
+  Other:                         0.00188946s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.126337s
+
+197020
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.83973e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.128041s
+Total Execution:                 0.0160565s
+  Pre-fusion:                    0.000212443s
+  Fusion:                        0.000520496s
+  Codegen:                       0.000197774s
+  Compilation:                   0.00341219s
+  Exec:                          0.00448745s
+  Copy2dev:                      7.1008e-05s
+  Copy2host:                     0.000244508s
+  Offload:                       0.00504816s
+  Other:                         0.00186251s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.111984s
+
+196668
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.74539e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.13244s
+Total Execution:                 0.0124522s
+  Pre-fusion:                    0.000214719s
+  Fusion:                        0.000527261s
+  Codegen:                       0.000208891s
+  Compilation:                   0.0034279s
+  Exec:                          0.00448444s
+  Copy2dev:                      5.1878e-05s
+  Copy2host:                     0.000217355s
+  Offload:                       0.00142727s
+  Other:                         0.00189249s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.119988s
+
+197373
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.69563e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.134885s
+Total Execution:                 0.0123769s
+  Pre-fusion:                    0.000210544s
+  Fusion:                        0.000519379s
+  Codegen:                       0.000200308s
+  Compilation:                   0.00339475s
+  Exec:                          0.00450126s
+  Copy2dev:                      5.5053e-05s
+  Copy2host:                     0.00022095s
+  Offload:                       0.0014051s
+  Other:                         0.00186955s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.122508s
+
+196937
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.4739e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.146975s
+Total Execution:                 0.0124602s
+  Pre-fusion:                    0.000212303s
+  Fusion:                        0.000518235s
+  Codegen:                       0.000200225s
+  Compilation:                   0.00344645s
+  Exec:                          0.0045387s
+  Copy2dev:                      5.5774e-05s
+  Copy2host:                     0.000230977s
+  Offload:                       0.00140288s
+  Other:                         0.00185471s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.134514s
+
+197416
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.37021e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.153404s
+Total Execution:                 0.012386s
+  Pre-fusion:                    0.000217405s
+  Fusion:                        0.000520659s
+  Codegen:                       0.00019284s
+  Compilation:                   0.00342654s
+  Exec:                          0.00444512s
+  Copy2dev:                      5.2535e-05s
+  Copy2host:                     0.000206109s
+  Offload:                       0.00140049s
+  Other:                         0.00192435s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.141018s
+
+197324
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 36000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0,}, frees: {a2,}, block list:
+    BH_ADD_REDUCE a1[0:1:1] a2[0:36000:1] 0
+
+[OpenCL] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/2 (0%)
+Compilation cache hits:          2/2 (100%)
+Array contractions:              4/9 (44.4444%)
+Outer-fusion ratio:              3/13 (23.0769%)
+Malloc cache hits:               0/2 (0%)
+
+Max memory usage:                6 MB
+Syncs to NumPy:                  1
+Total Work:                      3636000 operations
+Throughput:                      2.96663e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.122563s
+Total Execution:                 0.0124445s
+  Pre-fusion:                    0.000213234s
+  Fusion:                        0.000525824s
+  Codegen:                       0.000193686s
+  Compilation:                   0.00346924s
+  Exec:                          0.00447595s
+  Copy2dev:                      5.3947e-05s
+  Copy2host:                     0.000224168s
+  Offload:                       0.00145078s
+  Other:                         0.00183769s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.110119s
+

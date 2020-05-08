@@ -1,4 +1,307 @@
 
 Using Intel(R) CPU Runtime for OpenCL(TM) Applications / Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz (OpenCL C 2.0 )
-Write source "/tmp/bh_11564_a3593/src/c7f5da8a65501b4e_280794b21c55905e.cl"
-[    2     6    10 ... 39990 39994 39998]
+Write source "/tmp/bh_3b7_023e4/src/c7f5da8a65501b4e_c30598ecc4db2e5b.cl"
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      6.84036e+06ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.394716s
+Total Execution:                 0.219385s
+  Pre-fusion:                    0.000119793s
+  Fusion:                        0.000220973s
+  Codegen:                       0.000194895s
+  Compilation:                   0.208616s
+  Exec:                          0.00189805s
+  Copy2dev:                      0.00309691s
+  Copy2host:                     0.00435102s
+  Offload:                       0s
+  Other:                         0.00088761s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.175331s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  c7f5da8a65501b4e_c30598ecc4db2e5b.cl            1    1.90e-03s   1.90e-03s   1.90e-03s   
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.56401e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.172633s
+Total Execution:                 0.0279726s
+  Pre-fusion:                    0.00011042s
+  Fusion:                        0.000227717s
+  Codegen:                       0.000176402s
+  Compilation:                   0.0176399s
+  Exec:                          0.00180792s
+  Copy2dev:                      0.00307297s
+  Copy2host:                     0.00403619s
+  Offload:                       0s
+  Other:                         0.000901067s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.14466s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.85451e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.145591s
+Total Execution:                 0.0124761s
+  Pre-fusion:                    0.000112232s
+  Fusion:                        0.00022459s
+  Codegen:                       0.000172439s
+  Compilation:                   0.00307807s
+  Exec:                          0.00176388s
+  Copy2dev:                      0.00309003s
+  Copy2host:                     0.00319691s
+  Offload:                       0s
+  Other:                         0.00083792s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.133115s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.70292e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.158551s
+Total Execution:                 0.0137002s
+  Pre-fusion:                    0.000125224s
+  Fusion:                        0.000226962s
+  Codegen:                       0.000172172s
+  Compilation:                   0.0030499s
+  Exec:                          0.00218573s
+  Copy2dev:                      0.00307977s
+  Copy2host:                     0.00401918s
+  Offload:                       0s
+  Other:                         0.000841252s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.144851s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      2.0117e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.134215s
+Total Execution:                 0.0123829s
+  Pre-fusion:                    0.000111168s
+  Fusion:                        0.000221265s
+  Codegen:                       0.000192255s
+  Compilation:                   0.00305789s
+  Exec:                          0.00175362s
+  Copy2dev:                      0.0030673s
+  Copy2host:                     0.00318619s
+  Offload:                       0s
+  Other:                         0.000793206s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.121832s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.97904e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.13643s
+Total Execution:                 0.0124237s
+  Pre-fusion:                    0.000110781s
+  Fusion:                        0.000223819s
+  Codegen:                       0.000172648s
+  Compilation:                   0.00303379s
+  Exec:                          0.00176092s
+  Copy2dev:                      0.00311377s
+  Copy2host:                     0.00315671s
+  Offload:                       0s
+  Other:                         0.000851262s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.124006s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.97864e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.136457s
+Total Execution:                 0.0125287s
+  Pre-fusion:                    0.000112694s
+  Fusion:                        0.000241563s
+  Codegen:                       0.000174854s
+  Compilation:                   0.0030411s
+  Exec:                          0.00174362s
+  Copy2dev:                      0.00309421s
+  Copy2host:                     0.00321472s
+  Offload:                       0s
+  Other:                         0.000905972s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.123928s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.75873e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.15352s
+Total Execution:                 0.012587s
+  Pre-fusion:                    0.000112072s
+  Fusion:                        0.000225876s
+  Codegen:                       0.000205437s
+  Compilation:                   0.0031411s
+  Exec:                          0.00175933s
+  Copy2dev:                      0.00308506s
+  Copy2host:                     0.0032343s
+  Offload:                       0s
+  Other:                         0.000823791s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.140933s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.80982e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.149186s
+Total Execution:                 0.0124283s
+  Pre-fusion:                    0.000110495s
+  Fusion:                        0.000231293s
+  Codegen:                       0.000173258s
+  Compilation:                   0.00307798s
+  Exec:                          0.00173636s
+  Copy2dev:                      0.00306719s
+  Copy2host:                     0.00318293s
+  Offload:                       0s
+  Other:                         0.000848803s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.136758s
+
+[      2       6      10 ... 3599990 3599994 3599998]
+[OpenCL] Profiling: 
+Fuse cache hits:                 2/4 (50%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              1/4 (25%)
+Outer-fusion ratio:              1/5 (20%)
+Malloc cache hits:               0/3 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  2
+Total Work:                      2700000 operations
+Throughput:                      1.85843e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.145284s
+Total Execution:                 0.0125222s
+  Pre-fusion:                    0.000110925s
+  Fusion:                        0.000225012s
+  Codegen:                       0.000173231s
+  Compilation:                   0.00305841s
+  Exec:                          0.00176186s
+  Copy2dev:                      0.00313673s
+  Copy2host:                     0.00322999s
+  Offload:                       0s
+  Other:                         0.000826072s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.132762s
+

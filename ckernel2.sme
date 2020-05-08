@@ -10,65 +10,54 @@ clocked proc instr0()
 	bus a0l1: tdata;
 	bus a1l0: tdata;
 	var minLen : uint;
+	var acc : vdata [ halfLen ];
+	var lenReduc : uint;
+	var minLen2 : uint;
+	var i : uint;
+	var j : uint;
 {
 	if (a1l0.valid){
 		minLen = a1l0.len;
 		a0l1.valid = true;
-		a0l1.len = minLen;
-		for i = 0 to len - 1 {
-			if (i<minLen){
-				a0l1.val[i] = a1l0.val[i] + a1l0.val[i];
+		a0l1.len = 1;
+		lenReduc = len;
+		for j = 0 to reduceLen - 1 {
+			lenReduc = lenReduc/2;
+			minLen2 = minLen/2;
+			for i = 0 to lenReduc - 1 {
+				if (i<minLen2){
+					if(j==0){
+						if(i==0){
+							acc[0] = acc[0] + a1l0.val[i*2] + a1l0.val[i*2+1];
+						}
+						else{
+							acc[i] = a1l0.val[i*2] + a1l0.val[i*2+1];
+						}
+					}
+					else{
+						acc[i] = acc[i*2] + acc[i*2+1];
+					}
+				}
+				elif(i==minLen2 && minLen-minLen2!=minLen2){
+					if(j==0){
+						acc[i] = a1l0.val[i*2];
+					}
+					else{
+						acc[i] = acc[i*2];
+					}
+				}
+			}
+			if(minLen-minLen2!=minLen2){
+				minLen = minLen2+1;
+			}
+			else{
+				minLen= minLen2;
 			}
 		}
+		a0l1.val[0] = acc[0];
 	}
 	else{
 		a0l1.valid = false;
-	}
-}
-
-clocked proc instr1()
-	//Output
-	bus a2l2: tdata;
-	bus a0l1: tdata;
-	var minLen : uint;
-{
-	if (a0l1.valid){
-		minLen = a0l1.len;
-		a2l2.valid = true;
-		a2l2.len = minLen;
-		for i = 0 to len - 1 {
-			if (i<minLen){
-				a2l2.val[i] = a0l1.val[i] + 2;
-			}
-		}
-	}
-	else{
-		a2l2.valid = false;
-	}
-}
-
-clocked proc instr2()
-	//Output
-	bus a3l3: tdata;
-	bus a0l2: tdata;
-	bus a2l2: tdata;
-	var minLen : uint;
-{
-	if (a0l2.valid && a2l2.valid){
-		minLen = a0l2.len;
-		if (minLen > a2l2.len){
-			minLen = a2l2.len;
-		}
-		a3l3.valid = true;
-		a3l3.len = minLen;
-		for i = 0 to len - 1 {
-			if (i<minLen){
-				a3l3.val[i] = a0l2.val[i] + a2l2.val[i];
-			}
-		}
-	}
-	else{
-		a3l3.valid = false;
 	}
 }
 
@@ -91,29 +80,13 @@ clocked proc repeater()
 	}
 }
 
-network bohrium(in a1: tdata, out a2: tdata, out a3: tdata){
+network bohrium(in a1: tdata, out a0: tdata){
 	instance 0_inst of instr0();
-	instance 1_inst of instr1();
-	instance 2_inst of instr2();
 
-	instance repa0l2 of repeater();
-	instance repa0l3 of repeater();
 	instance repa1l1 of repeater();
-	instance repa1l2 of repeater();
-	instance repa1l3 of repeater();
-	instance repa2l3 of repeater();
 	connect
-		repa0l2.output -> repa0l3.input,
 		a1 -> repa1l1.input,
-		repa1l1.output -> repa1l2.input,
-		repa1l2.output -> repa1l3.input,
 
-		0_inst.a0l1 -> repa0l2.input,
 		a1 -> 0_inst.a1l0,
-		1_inst.a2l2 -> repa2l3.input,
-		0_inst.a0l1 -> 1_inst.a0l1,
-		repa0l2.output -> 2_inst.a0l2,
-		1_inst.a2l2 -> 2_inst.a2l2,
-		repa2l3.output -> a2,
-		2_inst.a3l3 -> a3;
+		0_inst.a0l1 -> a0;
 }

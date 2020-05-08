@@ -1,6 +1,6 @@
 #!/bin/bash
 path="testresults"
-names=("arr") # "reduce" "sample")
+names=("arr" "reduce" "sample")
 
 function run()
 {
@@ -9,12 +9,13 @@ function run()
     export BH_OPENMP_PROF=true
 
     echo "" > $path/"$name"OMP.txt
-    i=1
+    i=0
 
-    while [ $i -le 10 ]
+    while [ $i -lt 10 ]
     do
         ./"$name"test.py >> $path/"$name"OMP.txt
         i=`expr $i + 1`
+        export BH_OPENMP_VERBOSE=false
     done
 
     export BH_OPENCL_VERBOSE=true
@@ -28,6 +29,7 @@ function run()
     do
         ./"$name"test.py >> $path/"$name"OCL.txt
         i=`expr $i + 1`
+        export BH_OPENCL_VERBOSE=false
     done
 }
 

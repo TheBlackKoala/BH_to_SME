@@ -1,0 +1,407 @@
+
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 2198313073}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+Write source "/tmp/bh_57b_9d30a/src/b32891bf33e47a74_88cd94902dd8c7a5.c"
+compile command: "/usr/bin/cc -x c -fPIC -shared  -std=gnu99  -O3 -march=native -Werror -fopenmp -fopenmp-simd -I/home/tor/Documents/python_debug_env/share/bohrium/include /tmp/bh_57b_9d30a/src/b32891bf33e47a74_88cd94902dd8c7a5.c -o /tmp/bh_57b_9d30a/obj/b32891bf33e47a74_88cd94902dd8c7a5.so"
+196834
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          0/1 (0%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      1.25979e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.285762s
+Total Execution:                 0.236095s
+  Pre-fusion:                    0.000217428s
+  Fusion:                        0.000329038s
+  Codegen:                       0.000693709s
+  Compilation:                   0.229929s
+  Exec:                          0.00428435s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000640986s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0496674s
+
+Per-kernel Profiling:
+  Kernel filename                        Calls         Total time  Max time    Min time    
+  b32891bf33e47a74_88cd94902dd8c7a5.c             1    4.28e-03s   4.28e-03s   4.28e-03s   
+
+196631
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 518949806}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.51691e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.047892s
+Total Execution:                 0.00600132s
+  Pre-fusion:                    0.000179465s
+  Fusion:                        0.000273159s
+  Codegen:                       0.000562711s
+  Compilation:                   0.000199301s
+  Exec:                          0.00431108s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000475609s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0418907s
+
+196968
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 518848647}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.4e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0486487s
+Total Execution:                 0.00633101s
+  Pre-fusion:                    0.000171359s
+  Fusion:                        0.000258584s
+  Codegen:                       0.000563648s
+  Compilation:                   0.00017451s
+  Exec:                          0.0046842s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000478714s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0423176s
+
+196289
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a2,a6,}, frees: {a3,a4,a5,a2,a6,}, temps: {a3,a4,a5,a2,a6,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 3920861588}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.52915e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0478141s
+Total Execution:                 0.00599308s
+  Pre-fusion:                    0.000195483s
+  Fusion:                        0.000283671s
+  Codegen:                       0.000556507s
+  Compilation:                   0.00018428s
+  Exec:                          0.00429172s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000481421s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0418211s
+
+196596
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a2,a6,}, frees: {a3,a4,a5,a2,a6,}, temps: {a3,a4,a5,a2,a6,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 1362213137}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.48199e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0481156s
+Total Execution:                 0.00622207s
+  Pre-fusion:                    0.00018877s
+  Fusion:                        0.000272212s
+  Codegen:                       0.000549789s
+  Compilation:                   0.000196652s
+  Exec:                          0.00452944s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000485201s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0418935s
+
+197228
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 2342668849}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.45588e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.048284s
+Total Execution:                 0.00617772s
+  Pre-fusion:                    0.00018133s
+  Fusion:                        0.000280334s
+  Codegen:                       0.000567603s
+  Compilation:                   0.000176302s
+  Exec:                          0.00449138s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000480769s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0421063s
+
+196265
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 2268965445}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.45718e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0482756s
+Total Execution:                 0.00600639s
+  Pre-fusion:                    0.000177331s
+  Fusion:                        0.000301889s
+  Codegen:                       0.000562422s
+  Compilation:                   0.000195652s
+  Exec:                          0.00427546s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000493631s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0422692s
+
+197260
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a2,a6,}, frees: {a3,a4,a5,a2,a6,}, temps: {a3,a4,a5,a2,a6,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 2493047720}
+    BH_REMAINDER a5[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a4[0:900000:1] a5[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a4[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.49184e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0480523s
+Total Execution:                 0.00618264s
+  Pre-fusion:                    0.000167105s
+  Fusion:                        0.000250922s
+  Codegen:                       0.000574499s
+  Compilation:                   0.000178107s
+  Exec:                          0.00452037s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000491641s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0418696s
+
+197484
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 3910486188}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.48731e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.0480814s
+Total Execution:                 0.00598523s
+  Pre-fusion:                    0.000183373s
+  Fusion:                        0.000298619s
+  Codegen:                       0.000559336s
+  Compilation:                   0.000174295s
+  Exec:                          0.00429992s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000469682s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0420961s
+
+197401
+rank: -1, size: 1, news: {a1,}, block list:
+BH_IDENTITY a1[0:1:1] 0
+rank: 0, size: 900000, sweeps: { BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0,}, news: {a3,a4,a5,a6,a2,}, frees: {a3,a4,a5,a6,a2,}, temps: {a3,a4,a5,a6,a2,}, block list:
+    BH_RANDOM a3[0:900000:1] {.start = 0, .key = 2794856458}
+    BH_REMAINDER a4[0:900000:1] a3[0:900000:1] 256u
+    BH_IDENTITY a5[0:900000:1] a4[0:900000:1]
+    BH_IDENTITY a6[0:900000:1] a5[0:900000:1]
+    BH_DIVIDE a2[0:900000:1] a6[0:900000:1] 200
+    BH_ADD_REDUCE a1[0:1:1] a2[0:900000:1] 0
+
+[OpenMP] Profiling: 
+Fuse cache hits:                 1/3 (33.3333%)
+Codegen cache hits:              0/1 (0%)
+Compilation cache hits:          1/1 (100%)
+Array contractions:              5/6 (83.3333%)
+Outer-fusion ratio:              1/11 (9.09091%)
+Malloc cache hits:               0/1 (0%)
+
+Max memory usage:                0 MB
+Syncs to NumPy:                  1
+Total Work:                      3600000 operations
+Throughput:                      7.35249e+07ops
+Work below par-threshold (1000): 0%
+
+Wall clock:                      0.048963s
+Total Execution:                 0.00634745s
+  Pre-fusion:                    0.00018046s
+  Fusion:                        0.000258295s
+  Codegen:                       0.000555971s
+  Compilation:                   0.000174735s
+  Exec:                          0.00466744s
+  Copy2dev:                      0s
+  Copy2host:                     0s
+  Offload:                       0s
+  Other:                         0.000510554s
+Ext-method:                      0s
+
+Unaccounted for (wall - total):  0.0426156s
+
